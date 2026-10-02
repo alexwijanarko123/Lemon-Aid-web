@@ -1,0 +1,19 @@
+{
+  "name": "le-mon-aid-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Backend Le Mon-Aid: ambil data produk dari link + analisis Gemini",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@google/genai": "^1.0.0",
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0"
+  }
+}

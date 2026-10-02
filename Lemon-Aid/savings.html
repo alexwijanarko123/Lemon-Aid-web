@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le Mon-Aid - Savings</title>
+<link rel="stylesheet" href="navbar.css">
+<link rel="stylesheet" href="finance.css">
+<link rel="stylesheet" href="savings.css">
+</head>
+<body>
+<div class="phone">
+  <main class="screen">
+    <div class="brand"><h1>Le Mon-Aid</h1><span>free plan</span></div>
+    <h2 class="title">Your Financial Tracker</h2>
+
+    <div class="stats">
+      <div class="stat"><span class="ico" aria-hidden="true">💰</span><div>Monthly Income<b id="f-income"></b></div></div>
+      <div class="stat"><span class="ico" aria-hidden="true">🛒</span><div>Spending Budget<b id="f-budget"></b></div></div>
+      <div class="stat wide"><span class="ico" aria-hidden="true">🛒</span><div>Remaining Available Spending Budget<b id="f-remaining"></b></div></div>
+    </div>
+
+    <div class="duo">
+      <div class="tile">
+        <b>Shopping Money saved</b>
+        <div class="row"><span class="big" aria-hidden="true">🏦</span>
+          <div><b id="s-saved"></b><span id="s-progress">Progress : ...%</span></div></div>
+      </div>
+      <div class="tile">
+        <b>Target</b>
+        <div class="row"><span class="big" aria-hidden="true">🎯</span>
+          <b>katanya kalo punya 13 M = financial freedom</b></div>
+      </div>
+    </div>
+
+    <section class="chart-card" aria-label="Pengeluaran bulan ini">
+      <h3>Your Spending This Month</h3>
+      <div class="chart-row">
+        <svg id="donut" viewBox="0 0 120 120" role="img" aria-label="Diagram donat pengeluaran"></svg>
+        <ul class="legend" id="legend"></ul>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="navbar.js"></script>
+<script src="finance.js"></script>
+<script src="savings.js"></script>
+</body>
+</html>

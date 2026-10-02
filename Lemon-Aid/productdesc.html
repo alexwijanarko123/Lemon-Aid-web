@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le Mon-Aid - Product Desc</title>
+<link rel="stylesheet" href="navbar.css">
+<link rel="stylesheet" href="productdesc.css">
+</head>
+<body>
+<div class="phone">
+  <main class="screen">
+    <div class="brand"><h1>Le Mon-Aid</h1><span>free plan</span></div>
+    <div class="linkbar" id="p-link">product link here</div>
+
+    <div class="product">
+  <div class="pimg">Product image here</div>
+  <div class="pinfo">
+    <input id="p-name-input" type="text" maxlength="120" placeholder="Nama barang" aria-label="Nama barang">
+    <input id="p-price-input" type="text" inputmode="numeric" placeholder="Harga (Rp)" aria-label="Harga">
+    <div id="p-cost">Cost Percentage : ...%</div>
+    <button id="ai-btn" type="button" disabled>Minta pendapat AI</button>
+    <p id="ai-error" role="alert"></p>
+  </div>
+</div>
+
+    <section class="insight" id="insight" hidden aria-label="AI Insight">
+      <div class="row">
+        <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4285f4"/><stop offset=".5" stop-color="#9b72cb"/><stop offset="1" stop-color="#34a853"/></linearGradient></defs><path fill="url(#g)" d="M12 1c.6 5.6 5.4 10.4 11 11-5.6.6-10.4 5.4-11 11-.6-5.6-5.4-10.4-11-11C6.6 11.4 11.4 6.6 12 1z"/></svg>
+        <span class="row-title">AI Insight</span>
+        <span class="badge" id="ai-reco">N/A</span>
+      </div>
+      <p class="summary" id="ai-summary"></p>
+      <div class="score">
+        <span>Impulse score</span>
+        <div class="bar" role="img" aria-label="Impulse score"><i id="ai-bar"></i></div>
+        <b id="ai-score">N/A</b>
+      </div>
+      <div class="proscons">
+        <div><h3>Pros</h3><ul id="ai-pros"></ul></div>
+        <div><h3>Cons</h3><ul id="ai-cons"></ul></div>
+      </div>
+    </section>
+
+    <div class="pill"><span aria-hidden="true">⏳</span> Lemon Pause</div>
+    <div class="times" id="times"></div>
+
+    <div class="actions">
+      <button class="btn-sm btn-grey" id="buy-anyway">Buy Anyway</button>
+      <button class="btn-sm btn-red" id="set-timer" >Set Timer</button>
+    </div>
+  </main>
+</div>
+
+<script src="navbar.js"></script>
+<script src="productdesc.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+/* Khusus Halaman Savings */
+
+/* Section Title & Layout Grid */
+.title {
+  margin-top: 44px;
+  font-size: 15px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.duo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 22px;
+  padding: 0 6px;
+}
+
+/* Stat Tile Cards */
+.tile {
+  min-height: 94px;
+  padding: 10px;
+  background: var(--grey, #d9d9d9);
+  border-radius: 10px;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.tile > b {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.tile .row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tile .row .big {
+  font-size: 28px;
+}
+
+.tile .row b {
+  display: block;
+  font-size: 9px;
+}
+
+/* Chart Card & Donut Chart */
+.chart-card {
+  margin-top: 26px;
+  padding: 14px 18px 18px;
+  background: var(--yellow, #feff9f);
+  border: 1px solid #000;
+  border-radius: 34px;
+}
+
+.chart-card h3 {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.chart-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+#donut {
+  flex: none;
+  width: 150px;
+  height: 150px;
+}
+
+#donut text {
+  fill: #fff;
+  font-size: 9px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+/* Chart Legend */
+.legend {
+  font-size: 11px;
+  list-style: none;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.legend i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}

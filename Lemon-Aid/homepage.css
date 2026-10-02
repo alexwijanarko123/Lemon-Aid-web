@@ -1,0 +1,89 @@
+/* Khusus Halaman Home */
+
+/* User Header */
+.hello {
+  margin-top: 46px;
+  font-size: 15px;
+}
+
+.username {
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+/* Balance Card */
+.balance {
+  margin-top: 12px;
+  padding: 12px 22px 14px;
+  background: var(--yellow);
+  border: 1px solid #000;
+  border-radius: 40px;
+  font-size: 14px;
+}
+
+.balance strong {
+  display: block;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+/* Search Bar & Error */
+.search {
+  display: flex;
+  align-items: center;
+  margin: 40px 14px 0;
+  padding: 0 12px;
+  background: var(--grey);
+  border-radius: 10px;
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 0;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.search input::placeholder {
+  color: #111;
+}
+
+.search button {
+  display: flex;
+  padding: 4px;
+}
+
+.error {
+  min-height: 16px;
+  margin: 8px 14px 0;
+  font-size: 12px;
+  color: var(--red);
+}
+
+/* Insight Card */
+.insight {
+  min-height: 150px;
+  margin-top: 18px;
+  padding: 14px;
+  background: var(--grey);
+  border-radius: 10px;
+}
+
+.insight .row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.insight p {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.45;
+}

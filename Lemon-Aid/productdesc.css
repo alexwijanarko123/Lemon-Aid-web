@@ -1,0 +1,195 @@
+/* Khusus Halaman Product Desc */
+
+/* Linkbar / Breadcrumb */
+.linkbar {
+  margin-top: 62px;
+  padding: 8px 14px;
+  background: var(--grey);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Product Info Section */
+.product {
+  display: flex;
+  gap: 18px;
+  margin-top: 38px;
+}
+
+.pinfo {
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.pinfo .gap {
+  margin-top: 10px;
+}
+
+.pinfo textarea {
+  width: 100%;
+  height: 44px;
+  padding: 4px 6px;
+  background: #fafafa;
+  border: 1px dashed #888;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 400;
+  resize: none;
+}
+
+/* AI Insight Box */
+.insight {
+  margin-top: 22px;
+  padding: 12px 14px;
+  background: var(--grey);
+  border-radius: 10px;
+}
+
+.insight[hidden] {
+  display: none;
+}
+
+.insight .row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.insight .row-title {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.insight .badge {
+  padding: 2px 10px;
+  background: var(--yellow);
+  border: 1px solid #000;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.insight .summary {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* AI Impulse Score & Progress Bar */
+.insight .score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.insight .bar {
+  flex: 1;
+  height: 8px;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 6px;
+}
+
+.insight .bar i {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: #4a9d5b;
+  transition: width 0.4s;
+}
+
+.insight .bar i[data-level="mid"] {
+  background: #e0a800;
+}
+
+.insight .bar i[data-level="high"] {
+  background: var(--red);
+}
+
+.insight .score b {
+  min-width: 34px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Pros & Cons List Grid */
+.proscons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.proscons h3 {
+  margin-bottom: 3px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.proscons ul {
+  font-size: 11px;
+  line-height: 1.4;
+  list-style: none;
+}
+
+.proscons li {
+  position: relative;
+  margin-bottom: 2px;
+  padding-left: 12px;
+}
+
+.proscons li::before {
+  position: absolute;
+  left: 2px;
+  content: "•";
+}
+
+/* Delay/Timer Options Grid */
+.times {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+  padding: 0 6px;
+}
+
+.times button {
+  padding: 20px 0;
+  background: var(--grey);
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 700;
+  transition: transform 0.12s;
+}
+
+.times button[aria-pressed="true"] {
+  background: var(--yellow);
+  outline: 2px solid #000;
+}
+
+.times button:active {
+  transform: scale(0.97);
+}
+
+/* Action Buttons */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  margin-top: 34px;
+}
+
+.btn-red:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

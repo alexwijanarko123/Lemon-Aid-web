@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="loginpage.css">
+</head>
+<body>
+    <div class="login">
+        <h2>Login Here</h2>
+        <form method="post" novalidate>
+            <input type="text" id="username" name="username" placeholder="Username"><br>
+            <input type="email" id="email" name="email" placeholder="Email"><br>
+            <!-- TAMBAHKAN id="password" DAN id="confirmPassword" DI SINI -->
+            <input type="password" id="password" name="password" placeholder="Password"><br>
+            <input type="submit" value="Login">
+            <!-- SAMAKAN id="errorMessage" DENGAN JS -->
+            <p id="errorMessage"></p>
+
+            <p>Don't have an account? <a href="Registerpage.html">Register here</a></p>
+        </form>
+    </div>
+    <script src="loginpage.js"></script>
+</body>
+</html>
