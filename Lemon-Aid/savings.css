@@ -1,34 +1,35 @@
-/* Khusus Halaman Savings */
-
-/* Section Title & Layout Grid */
 .title {
-  margin-top: 44px;
-  font-size: 15px;
+  margin: 29px 0 0;
+  color: var(--brown);
+  font-size: 19px;
   font-weight: 800;
+  letter-spacing: -0.4px;
   text-align: center;
 }
 
 .duo {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-top: 22px;
-  padding: 0 6px;
+  gap: 10px;
+  margin-top: 17px;
 }
 
-/* Stat Tile Cards */
 .tile {
-  min-height: 94px;
-  padding: 10px;
-  background: var(--grey, #d9d9d9);
-  border-radius: 10px;
+  min-height: 104px;
+  padding: 13px 11px;
+  border: 1px solid rgba(119, 85, 55, 0.06);
+  border-radius: 17px;
+  background: #fff;
+  color: var(--muted);
   font-size: 9px;
-  line-height: 1.35;
+  line-height: 1.45;
+  box-shadow: 0 6px 18px rgba(86, 58, 25, 0.06);
 }
 
 .tile > b {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 9px;
+  color: var(--brown);
   font-size: 10px;
   text-align: center;
 }
@@ -40,66 +41,78 @@
 }
 
 .tile .row .big {
-  font-size: 28px;
+  font-size: 24px;
 }
 
 .tile .row b {
   display: block;
-  font-size: 9px;
+  color: var(--ink);
+  font-size: 10px;
 }
 
-/* Chart Card & Donut Chart */
 .chart-card {
-  margin-top: 26px;
-  padding: 14px 18px 18px;
-  background: var(--yellow, #feff9f);
-  border: 1px solid #000;
-  border-radius: 34px;
+  margin-top: 20px;
+  padding: 18px 15px;
+  border: 1px solid rgba(119, 85, 55, 0.08);
+  border-radius: 24px;
+  background: linear-gradient(145deg, var(--lemon), var(--yellow-light));
+  box-shadow: 0 10px 22px rgba(255, 182, 0, 0.12);
 }
 
 .chart-card h3 {
+  margin: 0;
+  color: var(--brown);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 800;
   text-align: center;
 }
 
 .chart-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-top: 10px;
+  justify-content: center;
+  gap: 11px;
+  margin-top: 11px;
 }
 
 #donut {
   flex: none;
-  width: 150px;
-  height: 150px;
+  width: min(48%, 150px);
+  height: auto;
+  overflow: visible;
+}
+
+#donut circle {
+  stroke-linecap: round;
 }
 
 #donut text {
-  fill: #fff;
-  font-size: 9px;
-  font-weight: 600;
+  fill: var(--ink);
+  font-size: 8px;
+  font-weight: 800;
   text-anchor: middle;
   dominant-baseline: middle;
 }
 
-/* Chart Legend */
 .legend {
-  font-size: 11px;
+  margin: 0;
+  padding: 0;
+  color: var(--brown);
+  font-size: 10px;
+  font-weight: 700;
   list-style: none;
 }
 
 .legend li {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
+  gap: 7px;
+  margin-bottom: 8px;
 }
 
 .legend i {
   display: inline-block;
-  width: 7px;
-  height: 7px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
 }
