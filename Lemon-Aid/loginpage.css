@@ -1,0 +1,78 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+	background-color: #1a1a1a;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	padding: 20px;
+}
+
+.login {
+	width: 360px;
+	background-color: #ffffff;
+	border-radius: 12px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 28px 24px;
+}
+
+.login h2 {
+	text-align: center;
+	margin: 10px 0 24px;
+}
+
+.login form {
+	width: 100%;
+	border: 5px solid #FFE08A;
+	text-align: center;
+	border-radius: 8px;
+	padding: 20px 12px;
+	margin-bottom: 20px;
+}
+
+.login input[type="text"],
+.login input[type="email"],
+.login input[type="password"] {
+	width: min(100%, 240px);
+	padding: 10px;
+	margin-bottom: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+.login input[type="submit"] {
+	background-color: #FFE08A;
+	color: #000;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.login #errorMessage {
+	color: red;
+	font-size: 14px;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+.login a[href]{
+    color: blue;
+}
+
+.login form > p:last-child {
+	margin-top: 16px;
+}
+
+.login a {
+	color: #000;
+}

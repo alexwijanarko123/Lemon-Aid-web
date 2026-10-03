@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { analyzeProduct, AnalysisError } from "./lib/analyze.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const FRONTEND_DIR = path.resolve(__dirname, process.env.FRONTEND_DIR || "../le-mon-aid");
+const FRONTEND_DIR = path.resolve(__dirname, process.env.FRONTEND_DIR || "../Lemon-Aid");
 const PORT = process.env.PORT || 3000;
 
 const app = express();
