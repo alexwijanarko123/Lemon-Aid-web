@@ -17,9 +17,9 @@ function initSavings() {
 /* Diagram donat dari SVG (tanpa library) */
 function drawDonut(s) {
   const parts = [
-    ["Food", s.food, "#3f51b5"],
-    ["Shopping", s.shopping, "#f0a830"],
-    ["Others", s.others, "#39a4c8"],
+    ["Food", s.food, "#e36a00"],
+    ["Shopping", s.shopping, "#ffb600"],
+    ["Others", s.others, "#93c878"],
   ];
   const total = parts.reduce((sum, p) => sum + p[1], 0) || 1;
   const R = 40, C = 2 * Math.PI * R;

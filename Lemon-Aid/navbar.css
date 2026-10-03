@@ -1,35 +1,68 @@
-/* Custom Properties & Variables */
 :root {
-  --yellow: #feff9f;
-  --cream: #f5f0c8;
-  --grey: #d9d9d9;
-  --red: #d92b25;
-  --ink: #111;
-  --bg: #1e1e1e;
+  color-scheme: light;
+  --yellow: #ffb600;
+  --yellow-light: #ffd156;
+  --lemon: #fff968;
+  --lemon-soft: #ffe867;
+  --lime: #eeff9b;
+  --green-light: #d3ffbe;
+  --green: #93c878;
+  --mint: #9becc1;
+  --brown: #775537;
+  --orange: #e36a00;
+  --ink: #352719;
+  --muted: #816d5c;
+  --paper: #fffdf6;
+  --surface: #ffffff;
+  --line: #eadfc8;
+  --red: #c84c37;
+  --shadow: 0 18px 48px rgba(86, 58, 25, 0.13);
 }
 
-/* CSS Reset & Base Elements */
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: #f7f1df;
 }
 
 body {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: 320px;
   min-height: 100vh;
-  background: var(--bg);
+  min-height: 100svh;
+  margin: 0;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 15% 12%, rgba(255, 209, 86, 0.28), transparent 34%),
+    radial-gradient(ellipse at 90% 88%, rgba(155, 236, 193, 0.3), transparent 32%),
+    #f7f1df;
   color: var(--ink);
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+textarea {
+  color: inherit;
+  font: inherit;
+}
+
+button,
+a,
+input,
+textarea {
+  -webkit-tap-highlight-color: transparent;
 }
 
 button {
-  border: none;
-  background: none;
-  color: inherit;
-  font: inherit;
+  border: 0;
   cursor: pointer;
 }
 
@@ -40,64 +73,86 @@ a {
 
 button:focus-visible,
 input:focus-visible,
+textarea:focus-visible,
 a:focus-visible {
-  outline: 3px solid #000;
-  outline-offset: 2px;
+  outline: 3px solid var(--orange);
+  outline-offset: 3px;
 }
 
-/* Mobile Frame & Screen Container */
 .phone {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 400px;
-  height: min(820px, 100vh);
+  width: min(100%, 430px);
+  height: min(860px, calc(100vh - 48px));
+  height: min(860px, calc(100svh - 48px));
+  min-height: 560px;
   overflow: hidden;
-  background: #fff;
-}
-
-@media (min-width: 440px) {
-  .phone {
-    border-radius: 6px;
-  }
+  border: 1px solid rgba(119, 85, 55, 0.1);
+  border-radius: 30px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
 }
 
 .screen {
   flex: 1;
-  padding: 0 24px 110px;
+  padding: 0 25px 108px;
+  overflow-x: hidden;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #e7d6b3 transparent;
 }
 
-/* Typography & Branding Header */
 .brand {
-  padding-top: 56px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 28px;
+  text-align: left;
+}
+
+.brand-logo {
+  width: 43px;
+  height: 43px;
+  flex: none;
+  object-fit: contain;
 }
 
 .brand h1 {
-  font-size: 25px;
+  width: fit-content;
+  background: linear-gradient(100deg, var(--yellow) 5%, var(--orange) 95%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 21px;
   font-weight: 800;
-  line-height: 1.1;
+  letter-spacing: -0.8px;
+  line-height: 1.05;
 }
 
 .brand span {
   display: block;
-  font-size: 15px;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* Utility UI Components */
 .pimg {
   display: flex;
   flex: none;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 114px;
   height: 114px;
   overflow: hidden;
-  background: var(--grey);
-  font-size: 13px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #fff7d8, #f3f0df);
+  color: var(--muted);
+  font-size: 12px;
   font-weight: 700;
   text-align: center;
 }
@@ -111,65 +166,122 @@ a:focus-visible {
 
 .pill {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  width: 225px;
-  margin: 14px auto;
-  padding: 6px;
-  background: var(--cream);
-  border-radius: 10px;
+  width: fit-content;
+  min-width: 170px;
+  margin: 18px auto;
+  padding: 10px 18px;
+  border: 1px solid rgba(119, 85, 55, 0.08);
+  border-radius: 999px;
+  background: var(--lime);
+  color: var(--brown);
   font-size: 13px;
   font-weight: 800;
 }
 
 .btn-sm {
-  padding: 7px 22px;
-  border-radius: 14px;
-  font-size: 11px;
+  min-height: 42px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 12px;
   font-weight: 800;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.btn-sm:active,
+.nav a:active {
+  transform: scale(0.97);
 }
 
 .btn-grey {
-  background: var(--grey);
+  background: var(--yellow);
+  color: var(--brown);
 }
 
 .btn-red {
-  background: var(--red);
-  color: #fff;
+  background: var(--yellow);
+  color: var(--brown);
 }
 
-/* Fixed Bottom Navbar */
+.btn-sm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .nav {
   position: absolute;
-  right: 16px;
-  bottom: 20px;
-  left: 16px;
+  right: 17px;
+  bottom: 16px;
+  left: 17px;
   display: flex;
   justify-content: space-around;
-  padding: 6px 8px 4px;
-  background: var(--yellow);
-  border: 1px solid #000;
-  border-radius: 34px;
+  padding: 8px 7px;
+  border: 1px solid rgba(119, 85, 55, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 24px rgba(86, 58, 25, 0.12);
+  backdrop-filter: blur(14px);
 }
 
 .nav a {
   display: flex;
+  min-width: 65px;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
-  min-width: 62px;
-  padding: 2px 8px;
-  border-radius: 14px;
-  font-size: 12px;
+  gap: 2px;
+  padding: 4px 10px;
+  border-radius: 15px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
 }
 
 .nav a svg {
-  width: 34px;
-  height: 34px;
+  width: 27px;
+  height: 27px;
+  stroke: currentColor;
 }
 
 .nav a[aria-current="page"] {
-  background: rgba(0, 0, 0, 0.07);
-  font-weight: 800;
+  background: var(--lime);
+  color: var(--brown);
+}
+
+.nav a[aria-current="page"] svg {
+  stroke: var(--brown);
+}
+
+@media (max-width: 600px) {
+  body {
+    display: block;
+    padding: 0;
+    background: var(--paper);
+  }
+
+  .phone {
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .screen {
+    padding-right: 21px;
+    padding-left: 21px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -1,0 +1,121 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: grid;
+  min-width: 320px;
+  min-height: 100vh;
+  min-height: 100svh;
+  place-items: center;
+  margin: 0;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 15% 12%, rgba(255, 209, 86, 0.3), transparent 34%),
+    radial-gradient(ellipse at 90% 88%, rgba(155, 236, 193, 0.3), transparent 32%),
+    #f7f1df;
+  color: #352719;
+  font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.login {
+  width: min(100%, 410px);
+  padding: 32px;
+  border: 1px solid rgba(119, 85, 55, 0.1);
+  border-radius: 28px;
+  background: #fffdf6;
+  box-shadow: 0 18px 48px rgba(86, 58, 25, 0.13);
+}
+
+.login h2 {
+  margin: 0 0 25px;
+  color: #775537;
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+  text-align: center;
+}
+
+.auth-logo {
+  display: block;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 5px;
+  object-fit: contain;
+}
+
+.login form {
+  display: grid;
+  gap: 12px;
+}
+
+.login input[type="text"],
+.login input[type="email"],
+.login input[type="password"] {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #eadfc8;
+  border-radius: 13px;
+  background: #eeff9b;
+  color: #352719;
+  font: inherit;
+  font-size: 14px;
+}
+
+.login input::placeholder {
+  color: #a2917e;
+}
+
+.login input[type="submit"] {
+  min-height: 49px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 14px;
+  background: #ffb600;
+  color: #352719;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+.login input[type="submit"]:hover {
+  background: #ffb600;
+}
+
+.login input[type="submit"]:active {
+  transform: scale(0.98);
+}
+
+.login p {
+  margin: 8px 0 0;
+  color: #816d5c;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.login #errorMessage {
+  color: #c84c37;
+  font-weight: 700;
+}
+
+.login a {
+  color: #a95400;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 420px) {
+  body {
+    padding: 16px;
+  }
+
+  .login {
+    padding: 26px 21px;
+  }
+}
