@@ -1,64 +1,64 @@
-/* Khusus Halaman Lemon Pause */
-
-/* Section Title & Layout Items */
 .title {
-  margin-top: 58px;
-  font-size: 17px;
+  margin: 34px 0 0;
+  color: var(--brown);
+  font-size: 20px;
   font-weight: 800;
+  letter-spacing: -0.4px;
   text-align: center;
 }
 
 .items {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  margin-top: 30px;
+  gap: 9px;
+  margin-top: 19px;
 }
 
 .pill {
-  margin-top: 18px;
+  margin-top: 24px;
 }
 
 .pill + .items {
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
-/* Item Card Grid */
 .item {
   display: flex;
-  gap: 9px;
   align-items: flex-start;
+  gap: 8px;
   min-width: 0;
-  padding: 8px 6px;
+  padding: 10px 8px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: #fff;
   font-size: 10px;
   font-weight: 700;
-  line-height: 1.35;
+  line-height: 1.4;
+  box-shadow: 0 5px 15px rgba(86, 58, 25, 0.04);
 }
 
 .item:nth-child(odd) {
-  padding-right: 10px;
-  border-right: 1px solid #000;
+  border-right: 1px solid var(--line);
 }
 
 .item:nth-child(even) {
-  padding-left: 10px;
+  padding-left: 8px;
 }
 
-/* Product Image & Thumbnail */
 .item .pimg {
-  width: 56px;
-  height: 56px;
-  font-size: 9px;
-  font-weight: 600;
+  width: 52px;
+  height: 52px;
+  border-radius: 11px;
+  font-size: 8px;
 }
 
 .item .pimg-img {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
+  border-radius: 11px;
   object-fit: cover;
-  border-radius: 6px;
 }
 
-/* Item Meta & Text Elements */
 .item .meta {
   min-width: 0;
 }
@@ -71,32 +71,38 @@
 
 .item .tleft {
   margin-top: 6px;
+  color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 
 .item .tleft b {
   display: block;
+  color: var(--brown);
   font-weight: 800;
 }
 
-/* Action Buttons & Empty State */
 .item .go {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
-  margin-top: 6px;
+  margin-top: 7px;
 }
 
 .item .go button {
-  padding: 3px 8px;
-  border-radius: 8px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--brown);
   font-size: 9px;
   font-weight: 800;
 }
 
 .empty {
   grid-column: 1 / -1;
-  padding: 14px 0;
+  padding: 20px 12px;
+  border: 1px dashed #d9c9aa;
+  border-radius: 15px;
+  color: var(--muted);
   font-size: 12px;
-  color: #555;
   text-align: center;
 }

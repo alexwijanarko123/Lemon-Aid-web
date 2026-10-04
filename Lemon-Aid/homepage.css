@@ -1,89 +1,146 @@
-/* Khusus Halaman Home */
-
-/* User Header */
 .hello {
-  margin-top: 46px;
-  font-size: 15px;
+  margin: 34px 0 2px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .username {
+  margin: 0;
   font-size: 30px;
-  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -1.2px;
+  line-height: 1.2;
 }
 
-/* Balance Card */
 .balance {
-  margin-top: 12px;
-  padding: 12px 22px 14px;
-  background: var(--yellow);
-  border: 1px solid #000;
-  border-radius: 40px;
-  font-size: 14px;
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: 24px;
+  background: linear-gradient(130deg, var(--yellow-light), var(--lemon));
+  box-shadow: 0 12px 24px rgba(227, 106, 0, 0.11);
+  color: var(--brown);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .balance strong {
   display: block;
-  font-size: 30px;
-  font-weight: 500;
+  margin: 5px 0;
+  color: var(--ink);
+  font-size: clamp(25px, 7vw, 32px);
+  font-weight: 800;
+  letter-spacing: -1px;
   line-height: 1.15;
 }
 
-/* Search Bar & Error */
-.search {
-  display: flex;
-  align-items: center;
-  margin: 40px 14px 0;
-  padding: 0 12px;
-  background: var(--grey);
-  border-radius: 10px;
+#search-form {
+  display: grid;
+  gap: 13px;
+  margin-top: 27px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(86, 58, 25, 0.06);
 }
 
-.search input {
-  flex: 1;
+#link-input,
+#search-form label {
+  width: 100%;
   min-width: 0;
-  padding: 13px 0;
-  background: none;
-  border: none;
-  font: inherit;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fffdf8;
+}
+
+#link-input {
+  padding: 14px 15px;
   font-size: 13px;
-  font-weight: 700;
 }
 
-.search input::placeholder {
-  color: #111;
+#link-input::placeholder {
+  color: #a2917e;
 }
 
-.search button {
-  display: flex;
-  padding: 4px;
+#search-form label {
+  display: grid;
+  gap: 9px;
+  padding: 12px;
+  color: var(--brown);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+#image-input {
+  width: 100%;
+  font-size: 11px;
+}
+
+#image-input::file-selector-button {
+  margin-right: 9px;
+  padding: 8px 11px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--yellow);
+  color: var(--brown);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+#image-preview {
+  justify-self: center;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+#search-form > button {
+  min-height: 48px;
+  border-radius: 14px;
+  background: var(--yellow);
+  color: var(--brown);
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 8px 16px rgba(227, 106, 0, 0.18);
+}
+
+#search-form > button:hover {
+  background: var(--yellow-light);
 }
 
 .error {
-  min-height: 16px;
-  margin: 8px 14px 0;
-  font-size: 12px;
+  min-height: 17px;
+  margin: 8px 4px 0;
   color: var(--red);
+  font-size: 12px;
 }
 
-/* Insight Card */
 .insight {
-  min-height: 150px;
-  margin-top: 18px;
-  padding: 14px;
-  background: var(--grey);
-  border-radius: 10px;
+  margin-top: 14px;
+  padding: 17px;
+  border: 1px solid rgba(147, 200, 120, 0.45);
+  border-radius: 20px;
+  background: linear-gradient(135deg, #efffe9, #eafaf4);
 }
 
 .insight .row {
   display: flex;
-  gap: 10px;
   align-items: center;
-  font-size: 13px;
-  font-weight: 700;
+  gap: 10px;
+  color: var(--brown);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.insight .row svg {
+  width: 30px;
+  height: 30px;
 }
 
 .insight p {
-  margin-top: 10px;
+  margin: 10px 0 0;
+  color: #665444;
   font-size: 13px;
-  line-height: 1.45;
+  line-height: 1.55;
 }
