@@ -35,7 +35,3 @@ adalah sebuat AI powered web apps yang memberikan akses kepada user untul lebih 
 - Endpoint dibatasi 10 request/menit per IP karena tiap request memakai kuota Gemini.
 - Teks halaman toko dikirim ke Gemini sebagai data, dengan instruksi untuk mengabaikan perintah di dalamnya.
 
-## Kalau frontend dan server beda alamat
-
-Pasang paket `cors` dan izinkan alamat frontend, atau ubah `fetch("/api/analyze-product")`
-di `home.js` menjadi URL server lengkap.
