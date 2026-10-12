@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { analyzeProduct, AnalysisError } from "./lib/analyze.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const FRONTEND_DIR = path.resolve(__dirname, process.env.FRONTEND_DIR || "../le-mon-aid");
+const FRONTEND_DIR = path.resolve(__dirname, process.env.FRONTEND_DIR || "../Lemon-Aid");
 const PORT = process.env.PORT || 3000;
 
 const app = express();
@@ -39,6 +39,8 @@ app.post("/api/analyze-product", limiter, async (req, res) => {
     res.status(500).json({ message: "Terjadi kesalahan di server." });
   }
 });
+
+app.use("/images", express.static(path.resolve(__dirname, "../images")));
 
 // Frontend disajikan dari server yang sama -> /api tidak kena masalah CORS
 app.use(express.static(FRONTEND_DIR, { index: "loginpage.html" }));
