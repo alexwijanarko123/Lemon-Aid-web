@@ -46,7 +46,5 @@ app.use("/images", express.static(path.resolve(__dirname, "../images")));
 app.use(express.static(FRONTEND_DIR, { index: "loginpage.html" }));
 
 app.listen(PORT, () => {
-  console.log(`Le Mon-Aid jalan di http://localhost:${PORT}`);
-  console.log(`Frontend: ${FRONTEND_DIR}`);
   if (process.env.DEV_FAKE_DATA === "true") console.log("MODE DEV: data produk palsu aktif");
 });
