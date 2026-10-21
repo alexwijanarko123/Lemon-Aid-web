@@ -1,36 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile</title>
+    <title>Le Mon-Aid - Edit Profile</title>
     <link rel="stylesheet" href="navbar.css">
     <link rel="stylesheet" href="editprofile.css">
 </head>
 <body>
-    <main class="screen">
+<div class="phone">
+  <main class="screen">
     <div class="brand">
-      <img class="brand-logo" src="../images/logo.png" alt="">
+      <img class="brand-logo" src="../images/logo.png" alt="Logo">
       <div><h1>Le Mon-Aid</h1><span>free plan</span></div>
     </div>
-    <div class="profile" name ="editprofile">
-        <h2>Edit Profile</h2>
-        <form method ="post">   
-            <input type="text" id="username" name="username" placeholder="username">
-            <h4>Gender</h4>
-            <input type="checkbox" id="gender" name="gender" value="male"> Male
-            <input type="checkbox" id="gender" name="gender" value="female"> Female
-            <input type="checkbox" id="gender" name="gender" value="other"> Other
-        </form>
-    </div>
-    <div class ="edit_income">
-        <input type="text" id="income" name="income" placeholder="Enter your income">
-        <input type="text" id="budget" name="budget" placeholder="Enter your budget">
-        <input type="text" id="target" name="target" placeholder="Enter your new target">
-    </div>
-    <button class="savechange" onclick="window.location.href = 'profile.html'">Save Changes</button>
 
-    <script src="navbar.js"></script>
-    <script src="editprofile.js"></script>
+    <a class="back-link" href="profile.html" aria-label="Back to Profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 12H4M10 5l-7 7 7 7"/>
+      </svg>
+    </a>
+
+    <h2 class="page-title">Edit Profile</h2>
+
+    <form id="edit-form" novalidate>
+      <div class="section-card">
+        <h3>Personal Credentials</h3>
+        
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter username" maxlength="50" required>
+
+        <label>Gender</label>
+        <div class="gender-group">
+          <label class="radio-label">
+            <input type="radio" name="gender" value="male"> Male
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="gender" value="female"> Female
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="gender" value="other"> Other
+          </label>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h3>Financial Information</h3>
+        
+        <label for="income">Monthly Income (Rp)</label>
+        <input type="text" id="income" inputmode="numeric" placeholder="e.g. 5.000.000">
+
+        <label for="budget">Spending Budget (Rp)</label>
+        <input type="text" id="budget" inputmode="numeric" placeholder="e.g. 3.000.000">
+
+        <label for="target">Savings Target (Rp)</label>
+        <input type="text" id="target" inputmode="numeric" placeholder="e.g. 10.000.000">
+      </div>
+
+      <p id="errorMessage" class="error-msg" role="alert"></p>
+
+      <button type="submit" class="savechange">Save Changes</button>
+    </form>
+  </main>
+</div>
+
+<script src="navbar.js"></script>
+<script src="finance.js"></script>
+<script src="editprofile.js"></script>
 </body>
 </html>

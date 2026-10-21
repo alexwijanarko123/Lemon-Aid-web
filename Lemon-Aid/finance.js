@@ -19,7 +19,7 @@ function getFinance() {
   const target = Number.isFinite(f.target) ? f.target : FINANCE_DEFAULTS.target;
   const spent = spending.food + spending.shopping + spending.others;
   return { income, budget, spending, spent, remaining: budget - spent,
-           saved: getSavedTotal(), target: FINANCE_DEFAULTS.target };
+           saved: getSavedTotal(), target };
 }
 
 /* Tampilkan / sembunyikan nominal (tombol mata di Profile) */
