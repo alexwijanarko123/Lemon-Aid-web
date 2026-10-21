@@ -4,12 +4,15 @@ import rateLimit from "express-rate-limit";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { analyzeProduct, AnalysisError } from "./lib/analyze.js";
+import cors from "cors";
+
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FRONTEND_DIR = path.resolve(__dirname, process.env.FRONTEND_DIR || "../Lemon-Aid");
 const PORT = process.env.PORT || 3000;
 
 const app = express();
+app.use(cors()); // Allow requests from your frontend domain
 app.use(express.json({ limit: "10kb" }));
 
 // Tiap request memakai kuota Gemini, jadi dibatasi per IP

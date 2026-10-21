@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Mon-Aid - Edit Profile</title>
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="editprofile.css">
+</head>
+<body>
+<div class="phone">
+  <main class="screen">
+    <div class="brand">
+      <img class="brand-logo" src="../images/logo.png" alt="Logo">
+      <div><h1>Le Mon-Aid</h1><span>free plan</span></div>
+    </div>
+
+    <a class="back-link" href="profile.html" aria-label="Back to Profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 12H4M10 5l-7 7 7 7"/>
+      </svg>
+    </a>
+
+    <h2 class="page-title">Edit Profile</h2>
+
+    <form id="edit-form" novalidate>
+      <div class="section-card">
+        <h3>Personal Credentials</h3>
+        
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter username" maxlength="50" required>
+
+        <label>Gender</label>
+        <div class="gender-group">
+          <label class="radio-label">
+            <input type="radio" name="gender" value="male"> Male
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="gender" value="female"> Female
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="gender" value="other"> Other
+          </label>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h3>Financial Information</h3>
+        
+        <label for="income">Monthly Income (Rp)</label>
+        <input type="text" id="income" inputmode="numeric" placeholder="e.g. 5.000.000">
+
+        <label for="budget">Spending Budget (Rp)</label>
+        <input type="text" id="budget" inputmode="numeric" placeholder="e.g. 3.000.000">
+
+        <label for="target">Savings Target (Rp)</label>
+        <input type="text" id="target" inputmode="numeric" placeholder="e.g. 10.000.000">
+      </div>
+
+      <p id="errorMessage" class="error-msg" role="alert"></p>
+
+      <button type="submit" class="savechange">Save Changes</button>
+    </form>
+  </main>
+</div>
+
+<script src="navbar.js"></script>
+<script src="finance.js"></script>
+<script src="editprofile.js"></script>
+</body>
+</html>

@@ -81,7 +81,8 @@ async function askAI() {
   msg.textContent = "";
 
   try {
-    const res = await fetch("/api/analyze-product", {
+    const BACKEND_URL = "https://YOUR-BACKEND-NAME.vercel.app";
+    const res = await fetch(`${BACKEND_URL}/api/analyze-product`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: data.name, price: data.price, merchant: product.merchant || "" }),
