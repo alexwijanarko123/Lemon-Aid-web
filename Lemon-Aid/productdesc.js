@@ -81,12 +81,12 @@ async function askAI() {
   msg.textContent = "";
 
   try {
-    const BACKEND_URL = "lemon-aid-web-server.vercel.app";
-    const res = await fetch(`${BACKEND_URL}/api/analyze-product`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: data.name, price: data.price, merchant: product.merchant || "" }),
-    });
+  const BACKEND_URL = "https://lemon-aid-web-server.vercel.app";
+  const res = await fetch(`${BACKEND_URL}/api/analyze-product`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: data.name, price: data.price, merchant: product.merchant || "" }),
+  });
     const json = await res.json().catch(() => ({}));
     if (!res.ok || !json.analysis) throw new Error(json.message || "Gagal meminta pendapat AI.");
     renderInsight(json.analysis);
