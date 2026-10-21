@@ -3,7 +3,7 @@ const FINANCE_DEFAULTS = {
   income: 0,
   budget: 0,
   target: 0, 
-  spending: { food: 670000, shopping: 650000, others: 445433 }, // data contoh
+  spending: { food: 0, shopping: 0, others: 0 }, // data contoh
 };
 
 function getSavedTotal() {
