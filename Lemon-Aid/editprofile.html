@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="editprofile.css">
+</head>
+<body>
+    <main class="screen">
+    <div class="brand">
+      <img class="brand-logo" src="../images/logo.png" alt="">
+      <div><h1>Le Mon-Aid</h1><span>free plan</span></div>
+    </div>
+    <div class="profile" name ="editprofile">
+        <h2>Edit Profile</h2>
+        <form method ="post">   
+            <input type="text" id="username" name="username" placeholder="username">
+            <h4>Gender</h4>
+            <input type="checkbox" id="gender" name="gender" value="male"> Male
+            <input type="checkbox" id="gender" name="gender" value="female"> Female
+            <input type="checkbox" id="gender" name="gender" value="other"> Other
+        </form>
+    </div>
+    <div class ="edit_income">
+        <input type="text" id="income" name="income" placeholder="Enter your income">
+        <input type="text" id="budget" name="budget" placeholder="Enter your budget">
+        <input type="text" id="target" name="target" placeholder="Enter your new target">
+    </div>
+    <button class="savechange" onclick="window.location.href = 'profile.html'">Save Changes</button>
+
+    <script src="navbar.js"></script>
+    <script src="editprofile.js"></script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 /* Data keuangan + helper. Muat SETELAH navbar.js dan SEBELUM profile.js / savings.js */
 const FINANCE_DEFAULTS = {
-  income: 10000000,
-  budget: 3000000,
-  target: 13000000000, // 13 M (miliar)
+  income: 0,
+  budget: 0,
+  target: 0, 
   spending: { food: 670000, shopping: 650000, others: 445433 }, // data contoh
 };
 
@@ -14,8 +14,9 @@ function getSavedTotal() {
 function getFinance() {
   const f = store.get("lemon_finance", {});
   const spending = { ...FINANCE_DEFAULTS.spending, ...(f.spending || {}) };
-  const income = Number(f.income) || FINANCE_DEFAULTS.income;
-  const budget = Number(f.budget) || FINANCE_DEFAULTS.budget;
+  const income = Number.isFinite(f.income) ? f.income : FINANCE_DEFAULTS.income;
+  const budget = Number.isFinite(f.budget) ? f.budget : FINANCE_DEFAULTS.budget;
+  const target = Number.isFinite(f.target) ? f.target : FINANCE_DEFAULTS.target;
   const spent = spending.food + spending.shopping + spending.others;
   return { income, budget, spending, spent, remaining: budget - spent,
            saved: getSavedTotal(), target: FINANCE_DEFAULTS.target };
