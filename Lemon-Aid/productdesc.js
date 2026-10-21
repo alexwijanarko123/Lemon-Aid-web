@@ -81,7 +81,7 @@ async function askAI() {
   msg.textContent = "";
 
   try {
-    const BACKEND_URL = "https://YOUR-BACKEND-NAME.vercel.app";
+    const BACKEND_URL = "lemon-aid-web-server.vercel.app";
     const res = await fetch(`${BACKEND_URL}/api/analyze-product`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
