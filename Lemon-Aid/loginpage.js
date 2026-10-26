@@ -38,7 +38,7 @@ if (form && errorMessage) {
       return;
     }
 
-    window.location.href = "homepage.html";
+    window.location.href = "completeprofile.html";
   });
 }
 
