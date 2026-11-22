@@ -116,31 +116,73 @@
   font-size: 12px;
 }
 
-.insight {
-  margin-top: 14px;
-  padding: 17px;
-  border: 1px solid rgba(147, 200, 120, 0.45);
-  border-radius: 20px;
-  background: linear-gradient(135deg, #efffe9, #eafaf4);
+.recent-purchases-card {
+  margin-top: 18px;
+  padding: 18px 16px 14px;
+  border: 3px solid #1fa3e5;
+  border-radius: 22px;
+  background: #cff09e;
+  box-shadow: 0 6px 18px rgba(31, 163, 229, 0.12);
 }
 
-.insight .row {
+.recent-purchases-header {
+  margin-bottom: 12px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: #7dae66;
+  color: #294c16;
+  font-size: 16px;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: -0.2px;
+}
+
+.recent-purchases-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.purchase-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: var(--brown);
-  font-size: 14px;
+  justify-content: space-between;
+  padding: 11px 4px;
+  border-bottom: 1.5px solid #829a50;
+  color: #455222;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.purchase-row .p-category {
+  flex: 1;
+  text-align: left;
+}
+
+.purchase-row .p-date {
+  flex: 2;
+  text-align: center;
+}
+
+.purchase-row .p-amount {
+  flex: 2;
+  text-align: right;
   font-weight: 800;
 }
 
-.insight .row svg {
-  width: 30px;
-  height: 30px;
+.recent-purchases-footer {
+  margin-top: 14px;
+  text-align: right;
 }
 
-.insight p {
-  margin: 10px 0 0;
-  color: #665444;
-  font-size: 13px;
-  line-height: 1.55;
+.recent-purchases-footer .view-history {
+  color: #658c42;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.recent-purchases-footer .view-history:hover {
+  opacity: 0.8;
+  text-decoration: underline;
 }

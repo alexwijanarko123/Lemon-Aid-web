@@ -5,12 +5,45 @@ let imageDataUrl = "";
 const currentUser = requireLogin();
 if (currentUser) initHome();
 
+const DEFAULT_PURCHASES = [
+  { category: "Food", date: "16 December 2025", amount: 1000000 },
+  { category: "Food", date: "7 December 2025", amount: 700000 },
+  { category: "Food", date: "29 November 2025", amount: 30000 },
+];
+
 function initHome() {
   renderNav("home");
   $("#username").textContent = currentUser.username;
   $("#balance").textContent = rp(USER.balance);
   $("#image-input").addEventListener("change", onImagePicked);
   $("#search-form").addEventListener("submit", onSubmit);
+  renderRecentPurchases();
+}
+
+function renderRecentPurchases() {
+  const container = $("#recent-purchases-list");
+  if (!container) return;
+
+  const purchases = store.get("lemon_history", DEFAULT_PURCHASES);
+  const items = Array.isArray(purchases) && purchases.length ? purchases.slice(0, 3) : DEFAULT_PURCHASES;
+
+  container.innerHTML = items
+    .map((item) => {
+      const priceText = typeof item.amount === "number"
+        ? `Rp ${item.amount.toLocaleString("id-ID")}`
+        : typeof item.price === "number"
+        ? `Rp ${item.price.toLocaleString("id-ID")}`
+        : item.amount || item.price || "Rp 0";
+
+      return `
+        <div class="purchase-row">
+          <span class="p-category">${esc(item.category || item.name || "Food")}</span>
+          <span class="p-date">${esc(item.date || "Today")}</span>
+          <span class="p-amount">${esc(priceText)}</span>
+        </div>
+      `;
+    })
+    .join("");
 }
 
 /* Perkecil gambar dulu: foto HP bisa beberapa MB, sedangkan localStorage hanya ~5 MB */
@@ -71,7 +104,7 @@ function onSubmit(e) {
   }
 
   // Mau gambar wajib? Hapus tanda komentar di bawah:
-  if (!imageDataUrl) { err.textContent = "Tambahkan gambar barang dulu."; return; }
+  //if (!imageDataUrl) { err.textContent = "Tambahkan gambar barang dulu."; return; }
 
   store.set("lemon_current", {
     id: Date.now(),

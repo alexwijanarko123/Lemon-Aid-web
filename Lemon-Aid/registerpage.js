@@ -2,18 +2,17 @@ const form = document.querySelector('form');
 const errorMessage = document.getElementById('errorMessage');
 
 if (form && errorMessage) {
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();               // selalu ditangani lewat JS
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
     errorMessage.textContent = "";
 
     const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim().toLowerCase();
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-    const genderInput = document.querySelector('input[name="gender"]:checked');
 
-    // Validasi satu per satu, berhenti di error pertama
-    if (!username || !email || !password || !confirmPassword || !genderInput) {
+    // 1. Validasi Input
+    if (!username || !email || !password || !confirmPassword) {
       return showError("Please fill in all fields.");
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -26,37 +25,31 @@ if (form && errorMessage) {
       return showError("Passwords do not match.");
     }
 
-    // --- Simpan data demo ke localStorage ---
-    const users = loadUsers();
-
-    if (users.some((u) => u.email === email)) {
-      return showError("This email is already registered.");
-    }
-    if (users.some((u) => u.username.toLowerCase() === username.toLowerCase())) {
-      return showError("This username is already taken.");
-    }
-
-    users.push({ username, email, gender: genderInput.value, password });
+    // 2. Kirim ke Server Database
     try {
-      localStorage.setItem('registeredUsers', JSON.stringify(users));
-    } catch {
-      return showError("Could not save your data. Please check your browser settings.");
-    }
+      const BACKEND_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:3000"
+        : "https://lemon-aid-web-server.vercel.app";
 
-    alert("Registration successful! You can now log in.");
-    window.location.href = "loginpage.html";
+      const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        return showError(data.message || "Gagal mendaftar.");
+      }
+
+      alert("Registrasi berhasil! Silakan login.");
+      window.location.href = "loginpage.html";
+    } catch (err) {
+      showError("Tidak dapat terhubung ke server database.");
+    }
   });
 }
 
 function showError(message) {
   errorMessage.textContent = message;
-}
-
-function loadUsers() {
-  try {
-    const data = JSON.parse(localStorage.getItem('registeredUsers'));
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
 }

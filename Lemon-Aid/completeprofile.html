@@ -15,45 +15,24 @@
       <div><h1>Le Mon-Aid</h1><span>free plan</span></div>
     </div>
 
-    <h2 class="page-title">Complete Your Profile</h2>
-
-    <form id="edit-form" novalidate>
-      <div class="section-card">
-        <h3>Personal Credentials</h3>
-        
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" placeholder="Enter username" maxlength="50" required>
-
-        <label>Gender</label>
-        <div class="gender-group">
-          <label class="radio-label">
-            <input type="radio" name="gender" value="male"> Male
-          </label>
-          <label class="radio-label">
-            <input type="radio" name="gender" value="female"> Female
-          </label>
-          <label class="radio-label">
-            <input type="radio" name="gender" value="other"> Other
-          </label>
-        </div>
-      </div>
-
+    <h2 class="page-title">Financial Info</h2>
+    <form id="profileForm" novalidate>
       <div class="section-card">
         <h3>Financial Information</h3>
         
-        <label for="income">Monthly Income (Rp)</label>
-        <input type="text" id="income" inputmode="numeric" placeholder="e.g. 5.000.000">
+        <label for="income">Your Money Income per month</label>
+        <input type="text" id="income" inputmode="numeric" placeholder="e.g. 5.000.000" required>
 
-        <label for="budget">Spending Budget (Rp)</label>
+        <label for="budget">Your Budget For shopping</label>
         <input type="text" id="budget" inputmode="numeric" placeholder="e.g. 3.000.000">
 
-        <label for="target">Savings Target (Rp)</label>
+        <label for="target">Your Savings Target</label>
         <input type="text" id="target" inputmode="numeric" placeholder="e.g. 10.000.000">
       </div>
 
       <p id="errorMessage" class="error-msg" role="alert"></p>
 
-      <button type="submit" class="savechange">Save Changes</button>
+      <button type="submit" class="savechange">Submit</button>
     </form>
   </main>
 </div>

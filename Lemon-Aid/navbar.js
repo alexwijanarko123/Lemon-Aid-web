@@ -12,7 +12,11 @@ function requireLogin() {
 
 // Keluar akun (bisa dipanggil dari halaman Profile nanti)
 function logout() {
-  try { localStorage.removeItem('currentUser'); } catch {}
+  try {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('lemon_finance');
+    localStorage.removeItem('lemon_current');
+  } catch {}
   window.location.href = "loginpage.html";
 }
 
