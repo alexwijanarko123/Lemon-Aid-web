@@ -39,7 +39,7 @@ function initCompleteProfile() {
 
   if (!form) return;
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (errorEl) errorEl.textContent = "";
 
@@ -58,7 +58,29 @@ function initCompleteProfile() {
       return;
     }
 
-    // Simpan data keuangan murni ke localStorage (lemon_finance)
+    // 1. Simpan ke database MySQL jika user memiliki ID
+    if (currentUser?.id) {
+      try {
+        const BACKEND_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+          ? "http://localhost:3000"
+          : "https://lemon-aid-web-server.vercel.app";
+
+        await fetch(`${BACKEND_URL}/api/finance`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: currentUser.id,
+            income: userIncome,
+            budget: userBudget,
+            target: userTarget,
+          }),
+        });
+      } catch (err) {
+        console.warn("Koneksi server gagal, menyimpan secara lokal:", err);
+      }
+    }
+
+    // 2. Simpan cache lokal di browser (lemon_finance)
     const currentFinance = store.get("lemon_finance", {});
     store.set("lemon_finance", {
       ...currentFinance,

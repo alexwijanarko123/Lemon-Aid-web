@@ -31,21 +31,48 @@ function initEditProfile() {
   // 1. Pre-fill Username & Gender
   usernameInput.value = currentUser.username || "";
 
-  const users = store.get("registeredUsers", []);
-  const currentUserRecord = users.find((u) => u.email === currentUser.email);
-  if (currentUserRecord?.gender) {
-    const genderRadio = document.querySelector(`input[name="gender"][value="${currentUserRecord.gender}"]`);
-    if (genderRadio) genderRadio.checked = true;
-  }
-
   // 2. Pre-fill Financial Data
   const f = getFinance();
   if (f.income > 0) incomeInput.value = f.income.toLocaleString("id-ID");
   if (f.budget > 0) budgetInput.value = f.budget.toLocaleString("id-ID");
   if (f.target > 0) targetInput.value = f.target.toLocaleString("id-ID");
 
-  // 3. Form Submit Handler
-  form.addEventListener("submit", (e) => {
+  // Ambil data terbaru langsung dari Database MySQL jika user memiliki ID
+  if (currentUser?.id) {
+    const BACKEND_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      ? "http://localhost:3000"
+      : "https://lemon-aid-web-server.vercel.app";
+
+    fetch(`${BACKEND_URL}/api/user/profile/${currentUser.id}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data) return;
+
+        if (data.user?.username) usernameInput.value = data.user.username;
+        if (data.user?.gender) {
+          const radio = document.querySelector(`input[name="gender"][value="${data.user.gender}"]`);
+          if (radio) radio.checked = true;
+        }
+
+        if (data.finance) {
+          if (Number(data.finance.income) > 0) incomeInput.value = Number(data.finance.income).toLocaleString("id-ID");
+          if (Number(data.finance.budget) > 0) budgetInput.value = Number(data.finance.budget).toLocaleString("id-ID");
+          if (Number(data.finance.target) > 0) targetInput.value = Number(data.finance.target).toLocaleString("id-ID");
+        }
+      })
+      .catch((err) => console.warn("Tidak dapat mengambil profil dari DB:", err));
+  }
+
+  // 3. Handler Tombol Change Password
+  const changePasswordBtn = document.querySelector(".change_password") || document.getElementById("cancelBtn") || document.getElementById("changePasswordBtn");
+  if (changePasswordBtn) {
+    changePasswordBtn.addEventListener("click", () => {
+      window.location.href = "changepassword.html";
+    });
+  }
+
+  // 4. Form Submit Handler
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     errorEl.textContent = "";
 
@@ -62,23 +89,42 @@ function initEditProfile() {
       return;
     }
 
-    // Check if new username is taken by another account
-    const allUsers = store.get("registeredUsers", []);
-    const usernameTaken = allUsers.some(
-      (u) => u.email !== currentUser.email && u.username.toLowerCase() === newUsername.toLowerCase()
-    );
-
-    if (usernameTaken) {
-      errorEl.textContent = "Username ini sudah digunakan oleh akun lain.";
-      return;
-    }
-
     if (userBudget > userIncome && userIncome > 0) {
       errorEl.textContent = "Spending budget tidak boleh melebihi monthly income.";
       return;
     }
 
-    // 4. Save Financial Data to localStorage (lemon_finance)
+    // 4. Kirim pembaruan ke Database MySQL jika ada koneksi/ID
+    if (currentUser?.id) {
+      try {
+        const BACKEND_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+          ? "http://localhost:3000"
+          : "https://lemon-aid-web-server.vercel.app";
+
+        const res = await fetch(`${BACKEND_URL}/api/user/profile`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: currentUser.id,
+            username: newUsername,
+            gender: newGender,
+            income: userIncome,
+            budget: userBudget,
+            target: userTarget,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          errorEl.textContent = data.message || "Gagal memperbarui profil di server.";
+          return;
+        }
+      } catch (err) {
+        console.warn("Koneksi server gagal, menyimpan secara lokal:", err);
+      }
+    }
+
+    // 5. Save Financial Data to localStorage (lemon_finance)
     const currentFinance = store.get("lemon_finance", {});
     store.set("lemon_finance", {
       ...currentFinance,
@@ -87,7 +133,8 @@ function initEditProfile() {
       target: userTarget,
     });
 
-    // 5. Update registeredUsers list
+    // 6. Update registeredUsers list (fallback lokal)
+    const allUsers = store.get("registeredUsers", []);
     const userIndex = allUsers.findIndex((u) => u.email === currentUser.email);
     if (userIndex !== -1) {
       allUsers[userIndex].username = newUsername;
@@ -95,14 +142,14 @@ function initEditProfile() {
       store.set("registeredUsers", allUsers);
     }
 
-    // 6. Update currentUser session
+    // 7. Update currentUser session
     store.set("currentUser", {
       ...currentUser,
       username: newUsername,
       gender: newGender || currentUser.gender,
     });
 
-    // 7. Return to Profile Page
+    // 8. Return to Profile Page
     window.location.href = "profile.html";
   });
 }

@@ -46,7 +46,8 @@ function readForm() {
 
 function onFormChange() {
   const price = parsePrice($("#p-price-input").value);
-  const balance = USER?.balance || 1;
+  const f = typeof getFinance === "function" ? getFinance() : store.get("lemon_finance", {});
+  const balance = f.remaining || f.budget || f.income || USER?.balance || 1;
   $("#p-cost").textContent = price > 0
     ? `Cost Percentage : ${((price / balance) * 100).toFixed(1).replace(".", ",")}%`
     : "Cost Percentage : ...%";

@@ -14,7 +14,12 @@ const DEFAULT_PURCHASES = [
 function initHome() {
   renderNav("home");
   $("#username").textContent = currentUser.username;
-  $("#balance").textContent = rp(USER.balance);
+
+  // Ambil saldo dari data keuangan yang diinput user
+  const f = typeof getFinance === "function" ? getFinance() : store.get("lemon_finance", {});
+  const userBalance = Number.isFinite(f.remaining) ? f.remaining : (Number(f.budget) || Number(f.income) || 0);
+  $("#balance").textContent = rp(userBalance);
+
   $("#image-input").addEventListener("change", onImagePicked);
   $("#search-form").addEventListener("submit", onSubmit);
   renderRecentPurchases();

@@ -153,6 +153,176 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
+// 2b. Change Password Endpoint
+app.post("/api/auth/change-password", async (req, res) => {
+  const userId = Number(req.body?.userId);
+  const currentPassword = typeof req.body?.currentPassword === "string" ? req.body.currentPassword : "";
+  const newPassword = typeof req.body?.newPassword === "string" ? req.body.newPassword : "";
+
+  if (!userId || !currentPassword || !newPassword) {
+    return res.status(400).json({ message: "Semua kolom password wajib diisi." });
+  }
+
+  if (newPassword.length < 8) {
+    return res.status(400).json({ message: "Password baru minimal harus 8 karakter." });
+  }
+
+  try {
+    const [rows] = await pool.query(
+      "SELECT id, password FROM users WHERE id = ? LIMIT 1",
+      [userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "User tidak ditemukan." });
+    }
+
+    const user = rows[0];
+    const isCurrentMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if (!isCurrentMatch) {
+      return res.status(401).json({ message: "Current Password yang Anda masukkan salah!" });
+    }
+
+    const hashedNew = await bcrypt.hash(newPassword, 10);
+    await pool.query("UPDATE users SET password = ? WHERE id = ?", [hashedNew, userId]);
+
+    res.json({ message: "Password berhasil diubah!" });
+  } catch (err) {
+    console.error("[auth/change-password]", err);
+    res.status(500).json({ message: "Gagal mengubah password di server/database." });
+  }
+});
+
+// ================= PROFILE & FINANCE API (MySQL) =================
+
+// 3. Simpan / Perbarui Data Finance dari Complete Profile
+app.post("/api/finance", async (req, res) => {
+  const userId = Number(req.body?.userId);
+  const income = Number(req.body?.income) || 0;
+  const budget = Number(req.body?.budget) || 0;
+  const target = Number(req.body?.target) || 0;
+
+  if (!userId) {
+    return res.status(400).json({ message: "User ID wajib disertakan." });
+  }
+
+  try {
+    const [existing] = await pool.query(
+      "SELECT id FROM finance WHERE user_id = ? LIMIT 1",
+      [userId]
+    );
+
+    if (existing.length > 0) {
+      await pool.query(
+        "UPDATE finance SET income = ?, budget = ?, target = ? WHERE user_id = ?",
+        [income, budget, target, userId]
+      );
+    } else {
+      await pool.query(
+        "INSERT INTO finance (user_id, income, budget, target) VALUES (?, ?, ?, ?)",
+        [userId, income, budget, target]
+      );
+    }
+
+    res.json({ message: "Data keuangan berhasil disimpan di database!", finance: { income, budget, target } });
+  } catch (err) {
+    console.error("[finance/save]", err);
+    res.status(500).json({ message: "Gagal menyimpan data keuangan ke database." });
+  }
+});
+
+// 4. Update Profile & Finance dari Edit Profile
+app.post("/api/user/profile", async (req, res) => {
+  const userId = Number(req.body?.userId);
+  const username = typeof req.body?.username === "string" ? req.body.username.trim() : "";
+  const gender = typeof req.body?.gender === "string" ? req.body.gender : "";
+  const income = Number(req.body?.income) || 0;
+  const budget = Number(req.body?.budget) || 0;
+  const target = Number(req.body?.target) || 0;
+
+  if (!userId || !username) {
+    return res.status(400).json({ message: "User ID dan Username wajib diisi." });
+  }
+
+  try {
+    // Cek apakah username baru sudah dipakai orang lain
+    const [taken] = await pool.query(
+      "SELECT id FROM users WHERE LOWER(username) = ? AND id != ? LIMIT 1",
+      [username.toLowerCase(), userId]
+    );
+
+    if (taken.length > 0) {
+      return res.status(400).json({ message: "Username sudah digunakan oleh akun lain." });
+    }
+
+    // Update users
+    await pool.query(
+      "UPDATE users SET username = ?, gender = ? WHERE id = ?",
+      [username, gender, userId]
+    );
+
+    // Update / Insert finance
+    const [existing] = await pool.query(
+      "SELECT id FROM finance WHERE user_id = ? LIMIT 1",
+      [userId]
+    );
+
+    if (existing.length > 0) {
+      await pool.query(
+        "UPDATE finance SET income = ?, budget = ?, target = ? WHERE user_id = ?",
+        [income, budget, target, userId]
+      );
+    } else {
+      await pool.query(
+        "INSERT INTO finance (user_id, income, budget, target) VALUES (?, ?, ?, ?)",
+        [userId, income, budget, target]
+      );
+    }
+
+    res.json({
+      message: "Profil dan keuangan berhasil diperbarui!",
+      user: { id: userId, username, gender },
+      finance: { income, budget, target },
+    });
+  } catch (err) {
+    console.error("[profile/update]", err);
+    res.status(500).json({ message: "Gagal memperbarui profil di database." });
+  }
+});
+
+// 5. Get Profile & Finance by User ID (untuk halaman Profile)
+app.get("/api/user/profile/:userId", async (req, res) => {
+  const userId = Number(req.params.userId);
+  if (!userId) {
+    return res.status(400).json({ message: "User ID tidak valid." });
+  }
+
+  try {
+    const [users] = await pool.query(
+      "SELECT id, username, email, gender FROM users WHERE id = ? LIMIT 1",
+      [userId]
+    );
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: "User tidak ditemukan." });
+    }
+
+    const [finances] = await pool.query(
+      "SELECT income, budget, target FROM finance WHERE user_id = ? LIMIT 1",
+      [userId]
+    );
+
+    res.json({
+      user: users[0],
+      finance: finances.length > 0 ? finances[0] : { income: 0, budget: 0, target: 0 },
+    });
+  } catch (err) {
+    console.error("[profile/get]", err);
+    res.status(500).json({ message: "Gagal mengambil data profil dari database." });
+  }
+});
+
 app.use("/images", express.static(path.resolve(__dirname, "../images")));
 
 // Frontend disajikan dari server yang sama -> /api tidak kena masalah CORS
