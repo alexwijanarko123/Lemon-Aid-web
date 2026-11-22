@@ -45,5 +45,5 @@ function fillAmounts(map) {
   renderAmounts();
 }
 function fillFinance(f) {
-  fillAmounts({ "f-income": f.income, "f-budget": f.budget, "f-remaining": f.remaining, "s-saved": f.saved });
+  fillAmounts({ "f-income": f.income, "f-budget": f.budget, "f-remaining": f.remaining, "s-saved": f.saved, "s-target": f.target });
 }

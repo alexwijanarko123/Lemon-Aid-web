@@ -116,3 +116,120 @@
   height: 9px;
   border-radius: 50%;
 }
+
+.add-Spending-btn {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px 16px;
+  border: 1px solid rgba(119, 85, 55, 0.15);
+  border-radius: 14px;
+  background: var(--yellow);
+  color: var(--brown);
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(227, 106, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.add-Spending-btn:hover {
+  transform: translateY(-1px);
+  background: var(--yellow-light);
+}
+
+.add-Spending-btn:active {
+  transform: translateY(0);
+}
+
+/* ========== Pop Up Add Spending ========== */
+.popup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.55);
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-overlay.active {
+  display: flex;
+}
+
+.popup-box {
+  width: min(85%, 320px);
+  padding: 24px 22px 20px;
+  border-radius: 20px;
+  background: linear-gradient(155deg, #c5e4b2, #a8d490);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  animation: popIn 0.25s ease;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.popup-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.popup-field label {
+  flex: 0 0 80px;
+  color: #2d5016;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.popup-field select,
+.popup-field input {
+  flex: 1;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.45);
+  color: #2d5016;
+  font-size: 13px;
+  font-weight: 600;
+  outline: none;
+  appearance: auto;
+}
+
+.popup-field select:focus,
+.popup-field input:focus {
+  box-shadow: 0 0 0 2px rgba(45, 80, 22, 0.3);
+}
+
+.popup-add-btn {
+  display: block;
+  width: 55%;
+  margin: 6px auto 0;
+  padding: 10px 0;
+  border: none;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #2d5016;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.popup-add-btn:hover {
+  background: rgba(255, 255, 255, 0.7);
+  transform: translateY(-1px);
+}
+
+.popup-add-btn:active {
+  transform: translateY(0);
+}
+
+.popup-add-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

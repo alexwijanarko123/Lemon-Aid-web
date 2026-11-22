@@ -1,108 +1,222 @@
+.lemonpause-screen {
+  background:
+    radial-gradient(circle at 18% 15%, rgba(220, 248, 178, 0.45), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(255, 230, 110, 0.35), transparent 45%),
+    #fcf8eb;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 24px;
+}
+
+.brand-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.plan-badge {
+  display: block;
+  margin-top: 2px;
+  color: #386629;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 .title {
-  margin: 34px 0 0;
-  color: var(--brown);
-  font-size: 20px;
+  margin: 22px 0 14px;
+  color: #2b4d1c;
+  font-size: 21px;
   font-weight: 800;
   letter-spacing: -0.4px;
   text-align: center;
 }
 
-.items {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 9px;
-  margin-top: 19px;
+/* Card saat tidak ada produk yang Time Up (persis di gambar) */
+.no-timeup-card {
+  padding: 32px 18px;
+  border: 2.5px solid #1fa3e5;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f5a623 0%, #ffe043 100%);
+  box-shadow: 0 6px 18px rgba(31, 163, 229, 0.12);
+  text-align: center;
 }
 
-.pill {
-  margin-top: 24px;
-}
-
-.pill + .items {
-  margin-top: 14px;
-}
-
-.item {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  min-width: 0;
-  padding: 10px 8px;
-  border: 1px solid var(--line);
-  border-radius: 15px;
-  background: #fff;
-  font-size: 10px;
-  font-weight: 700;
+.no-timeup-card p {
+  margin: 0;
+  color: #573708;
+  font-size: 13.5px;
+  font-weight: 800;
   line-height: 1.4;
-  box-shadow: 0 5px 15px rgba(86, 58, 25, 0.04);
 }
 
-.item:nth-child(odd) {
-  border-right: 1px solid var(--line);
+/* Pill Lemon Pause */
+.pause-pill {
+  width: 100%;
+  margin: 20px auto 14px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: #c5e89b;
+  color: #335a1a;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
 }
 
-.item:nth-child(even) {
-  padding-left: 8px;
+/* Waiting List & Time Up List */
+#waiting-list,
+#timeup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-bottom: 25px;
 }
 
-.item .pimg {
-  width: 52px;
-  height: 52px;
-  border-radius: 11px;
-  font-size: 8px;
+/* Waiting Card (Sesuai di gambar) */
+.waiting-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: #fffce3;
+  box-shadow: 0 4px 12px rgba(86, 58, 25, 0.05);
+  border: 1px solid rgba(245, 166, 35, 0.2);
 }
 
-.item .pimg-img {
-  width: 52px;
-  height: 52px;
-  border-radius: 11px;
+.item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.item-img-placeholder {
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  background: #dcdcdc;
+}
+
+.item-img {
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+  border-radius: 13px;
   object-fit: cover;
 }
 
-.item .meta {
+.item-info {
+  flex: 1;
   min-width: 0;
 }
 
-.item .meta div {
+.item-name {
+  margin: 0;
+  color: #2e3b12;
+  font-size: 13.5px;
+  font-weight: 800;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.item .tleft {
-  margin-top: 6px;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.item .tleft b {
-  display: block;
-  color: var(--brown);
-  font-weight: 800;
-}
-
-.item .go {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 7px;
-}
-
-.item .go button {
-  padding: 5px 8px;
-  border-radius: 999px;
-  background: var(--yellow);
-  color: var(--brown);
-  font-size: 9px;
-  font-weight: 800;
-}
-
-.empty {
-  grid-column: 1 / -1;
-  padding: 20px 12px;
-  border: 1px dashed #d9c9aa;
-  border-radius: 15px;
-  color: var(--muted);
+.item-price {
+  margin: 3px 0 2px;
+  color: #c78300;
   font-size: 12px;
+  font-weight: 800;
+}
+
+.item-countdown {
+  margin: 0;
+  color: #d48800;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.timer-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Timeup Card (Dengan tombol Buy & Skip) */
+.timeup-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: #fff;
+  border: 2px solid #1fa3e5;
+  box-shadow: 0 4px 14px rgba(31, 163, 229, 0.12);
+}
+
+.timeup-badge {
+  display: inline-block;
+  color: var(--red);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.timeup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-buy {
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #f5a623;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s ease;
+}
+
+.btn-buy:hover {
+  transform: scale(1.04);
+}
+
+.btn-skip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #e4decb;
+  color: #554228;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s ease;
+}
+
+.btn-skip:hover {
+  transform: scale(1.04);
+}
+
+.empty-waiting {
+  padding: 24px 16px;
+  border-radius: 16px;
+  background: rgba(255, 252, 227, 0.7);
+  border: 1px dashed #d9c9aa;
+  color: #7a6e50;
+  font-size: 12px;
+  font-weight: 700;
   text-align: center;
 }

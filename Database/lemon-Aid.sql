@@ -49,3 +49,14 @@ CREATE TABLE IF NOT EXISTS timer (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
+
+-- 5. Tabel Spending (Pengeluaran manual dari Savings page)
+CREATE TABLE IF NOT EXISTS spending (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    category ENUM('food', 'shopping', 'others') NOT NULL DEFAULT 'others',
+    price DECIMAL(15, 2) NOT NULL,
+    date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

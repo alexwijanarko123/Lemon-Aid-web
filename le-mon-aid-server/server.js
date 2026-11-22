@@ -323,6 +323,294 @@ app.get("/api/user/profile/:userId", async (req, res) => {
   }
 });
 
+// ================= SPENDING API (MySQL) =================
+
+// Simpan pengeluaran baru
+app.post("/api/spending", async (req, res) => {
+  const userId = Number(req.body?.userId);
+  const category = typeof req.body?.category === "string" ? req.body.category : "";
+  const price = Number(req.body?.price) || 0;
+  const date = typeof req.body?.date === "string" ? req.body.date.trim() : "";
+
+  if (!userId || !["food", "shopping", "others"].includes(category) || price <= 0 || !date) {
+    return res.status(400).json({ message: "Data spending tidak lengkap." });
+  }
+
+  try {
+    const [result] = await pool.query(
+      "INSERT INTO spending (user_id, category, price, date) VALUES (?, ?, ?, ?)",
+      [userId, category, price, date]
+    );
+
+    res.status(201).json({
+      message: "Pengeluaran berhasil disimpan!",
+      spending: { id: result.insertId, category, price, date },
+    });
+  } catch (err) {
+    console.error("[spending/create]", err);
+    res.status(500).json({ message: "Gagal menyimpan pengeluaran ke database." });
+  }
+});
+
+// Ambil ringkasan spending bulan ini per kategori
+app.get("/api/spending/:userId", async (req, res) => {
+  const userId = Number(req.params.userId);
+  if (!userId) {
+    return res.status(400).json({ message: "User ID tidak valid." });
+  }
+
+  try {
+    // Ambil total per kategori untuk bulan ini
+    const [rows] = await pool.query(
+      `SELECT category, SUM(price) AS total
+       FROM spending
+       WHERE user_id = ? AND MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())
+       GROUP BY category`,
+      [userId]
+    );
+
+    const summary = { food: 0, shopping: 0, others: 0 };
+    rows.forEach((r) => {
+      if (summary.hasOwnProperty(r.category)) {
+        summary[r.category] = Number(r.total);
+      }
+    });
+
+    res.json({ spending: summary });
+  } catch (err) {
+    console.error("[spending/list]", err);
+    res.status(500).json({ message: "Gagal mengambil data spending dari database." });
+  }
+});
+
+// ================= TIMER / LEMON PAUSE API (MySQL) =================
+
+// 6. Simpan Timer baru (dari productdesc.js saat user klik "Set Timer")
+app.post("/api/timers", async (req, res) => {
+  const userId = Number(req.body?.userId);
+  const name = typeof req.body?.name === "string" ? req.body.name.trim().slice(0, 150) : "";
+  const price = Number(req.body?.price) || 0;
+  const url = typeof req.body?.url === "string" ? req.body.url.trim() : null;
+  const imageUrl = typeof req.body?.imageUrl === "string" ? req.body.imageUrl.trim().slice(0, 500) : null;
+  const reason = typeof req.body?.reason === "string" ? req.body.reason.trim() : "";
+  const durationSeconds = Number(req.body?.durationSeconds) || 0;
+
+  if (!userId || !name || price <= 0 || durationSeconds <= 0) {
+    return res.status(400).json({ message: "Data timer tidak lengkap." });
+  }
+
+  try {
+    // 1. Simpan produk ke tabel products
+    const [productResult] = await pool.query(
+      "INSERT INTO products (user_id, name, price, url, image_url, reason) VALUES (?, ?, ?, ?, ?, ?)",
+      [userId, name, price, url, imageUrl, reason]
+    );
+    const productId = productResult.insertId;
+
+    // 2. Hitung end_time
+    const startTime = new Date();
+    const endTime = new Date(startTime.getTime() + durationSeconds * 1000);
+
+    // 3. Simpan timer ke tabel timer
+    const [timerResult] = await pool.query(
+      "INSERT INTO timer (user_id, product_id, start_time, end_time, status) VALUES (?, ?, ?, ?, 'waiting')",
+      [userId, productId, startTime, endTime]
+    );
+
+    res.status(201).json({
+      message: "Timer berhasil disimpan!",
+      timer: {
+        id: timerResult.insertId,
+        productId,
+        name,
+        price,
+        imageUrl,
+        url,
+        reason,
+        endsAt: endTime.getTime(),
+        status: "waiting",
+      },
+    });
+  } catch (err) {
+    console.error("[timers/create]", err);
+    res.status(500).json({ message: "Gagal menyimpan timer ke database." });
+  }
+});
+
+// 7. Ambil semua timer milik user (untuk lemonpause.js)
+app.get("/api/timers/:userId", async (req, res) => {
+  const userId = Number(req.params.userId);
+  if (!userId) {
+    return res.status(400).json({ message: "User ID tidak valid." });
+  }
+
+  try {
+    const [rows] = await pool.query(
+      `SELECT t.id, t.product_id AS productId, t.start_time, t.end_time, t.status,
+              p.name, p.price, p.url, p.image_url AS imageUrl, p.reason
+       FROM timer t
+       JOIN products p ON t.product_id = p.id
+       WHERE t.user_id = ? AND t.status = 'waiting'
+       ORDER BY t.end_time ASC`,
+      [userId]
+    );
+
+    const timers = rows.map((r) => ({
+      id: r.id,
+      productId: r.productId,
+      name: r.name,
+      price: Number(r.price),
+      link: r.url,
+      imageUrl: r.imageUrl,
+      reason: r.reason,
+      endsAt: new Date(r.end_time).getTime(),
+      status: r.status,
+    }));
+
+    res.json({ timers });
+  } catch (err) {
+    console.error("[timers/list]", err);
+    res.status(500).json({ message: "Gagal mengambil data timer dari database." });
+  }
+});
+
+// 8. Update status timer (Buy / Skip)
+app.post("/api/timers/:id/action", async (req, res) => {
+  const timerId = Number(req.params.id);
+  const action = typeof req.body?.action === "string" ? req.body.action : "";
+  const userId = Number(req.body?.userId);
+
+  if (!timerId || !userId || !["bought", "skipped"].includes(action)) {
+    return res.status(400).json({ message: "Data aksi tidak valid." });
+  }
+
+  try {
+    // Pastikan timer milik user ini dan masih berstatus waiting
+    const [rows] = await pool.query(
+      "SELECT t.id, t.product_id, p.name, p.price FROM timer t JOIN products p ON t.product_id = p.id WHERE t.id = ? AND t.user_id = ? AND t.status = 'waiting' LIMIT 1",
+      [timerId, userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "Timer tidak ditemukan atau sudah diproses." });
+    }
+
+    await pool.query("UPDATE timer SET status = ? WHERE id = ?", [action, timerId]);
+
+    res.json({
+      message: action === "bought" ? "Barang ditandai sebagai dibeli." : "Barang berhasil di-skip! Uang berhasil dihemat.",
+      timer: { id: timerId, status: action, name: rows[0].name, price: Number(rows[0].price) },
+    });
+  } catch (err) {
+    console.error("[timers/action]", err);
+    res.status(500).json({ message: "Gagal memperbarui status timer." });
+  }
+});
+
+
+// ================= MINI SURVEY GEMINI INSIGHT API =================
+
+app.post("/api/mini-survey-insight", limiter, async (req, res) => {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ message: "GEMINI_API_KEY belum diset di file .env." });
+  }
+
+  const userId = Number(req.body?.userId) || null;
+  const itemName = typeof req.body?.itemName === "string" ? req.body.itemName.trim().slice(0, 150) : "";
+  const itemPrice = typeof req.body?.itemPrice === "string"
+    ? req.body.itemPrice.trim().slice(0, 60)
+    : Number(req.body?.itemPrice) || "";
+  const similarItems = typeof req.body?.similarItems === "string" ? req.body.similarItems.trim().slice(0, 200) : "";
+  const buyTime = typeof req.body?.buyTime === "string" ? req.body.buyTime.trim().slice(0, 100) : "";
+  const buyReason = typeof req.body?.buyReason === "string" ? req.body.buyReason.trim().slice(0, 500) : "";
+  const productLink = typeof req.body?.productLink === "string" ? req.body.productLink.trim().slice(0, 500) : "";
+
+  if (!itemName || !itemPrice || !similarItems || !buyReason) {
+    return res.status(400).json({ message: "Field survei bertanda (*) wajib diisi." });
+  }
+
+  // Opsional: ambil konteks keuangan user jika userId tersedia
+  let financeContext = "";
+  if (userId) {
+    try {
+      const [finRows] = await pool.query(
+        "SELECT income, budget, target FROM finance WHERE user_id = ? LIMIT 1",
+        [userId]
+      );
+      const [spendRows] = await pool.query(
+        `SELECT category, SUM(price) AS total
+         FROM spending
+         WHERE user_id = ? AND MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())
+         GROUP BY category`,
+        [userId]
+      );
+
+      const totalSpent = spendRows.reduce((acc, row) => acc + Number(row.total || 0), 0);
+      if (finRows.length > 0) {
+        const f = finRows[0];
+        financeContext = `
+Konteks Keuangan User Bulan Ini (dari database):
+- Income: ${Number(f.income || 0)}
+- Budget: ${Number(f.budget || 0)}
+- Target tabungan/goal: ${Number(f.target || 0)}
+- Total pengeluaran tercatat bulan ini: ${totalSpent}
+`;
+      }
+    } catch (dbErr) {
+      console.warn("[mini-survey-insight/finance-context]", dbErr?.message || dbErr);
+    }
+  }
+
+  const prompt = `
+Kamu adalah "Le Mon-Aid", asisten keuangan cerdas yang ramah, jujur, dan sedikit jenaka untuk mencegah pembelian impulsif (impulse buying).
+Analisis rencana pembelian user berdasarkan data Mini Survey berikut:
+
+- Barang yang ingin dibeli: ${itemName}
+- Harga: ${itemPrice}
+- Punya barang dengan fungsi serupa?: ${similarItems}
+- Rencana waktu beli: ${buyTime || "Tidak disebutkan"}
+- Alasan membeli: ${buyReason}
+- Link produk: ${productLink || "Tidak ada"}
+${financeContext}
+Tugasmu:
+1. Berikan penilaian singkat (apakah ini kebutuhan mendesak atau keinginan impulsif).
+2. Berikan 2-3 poin pertimbangan logis berdasarkan harga, barang serupa, dan kondisi keuangan (jika ada).
+3. Berikan saran keputusan yang suportif namun tegas (misal: sarankan "Lemon Pause" / "Save for later" jika terlihat impulsif).
+Gunakan bahasa Indonesia yang santai, hangat, dan mudah dibaca (maksimal 160 kata).
+  `.trim();
+
+  try {
+    const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+    const geminiRes = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+      }),
+    });
+
+    const data = await geminiRes.json();
+    if (!geminiRes.ok) {
+      return res.status(geminiRes.status).json({
+        message: data?.error?.message || "Gagal mendapatkan respons dari Gemini API.",
+      });
+    }
+
+    const insight = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+    if (!insight) {
+      return res.status(502).json({ message: "Gemini tidak mengembalikan teks insight." });
+    }
+
+    return res.json({ insight });
+  } catch (err) {
+    console.error("[mini-survey-insight]", err);
+    return res.status(500).json({ message: "Gagal menghubungi layanan Gemini AI." });
+  }
+});
+
 app.use("/images", express.static(path.resolve(__dirname, "../images")));
 
 // Frontend disajikan dari server yang sama -> /api tidak kena masalah CORS

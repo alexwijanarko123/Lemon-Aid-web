@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Mon-Aid - AI Insight</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="AI_insight.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div class="main-container">
+      
+      <!-- Header Brand -->
+      <header class="brand-header">
+        <div class="logo-wrapper">
+          <!-- Custom SVG Logo Lemon + Coin -->
+          <svg width="64" height="58" viewBox="0 0 80 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Lemon back -->
+            <path d="M36 22C22 22 12 31 12 43C12 45 10 47 8 48C8 51 11 53 14 53C19 60 27 64 36 64C48 64 58 55 58 43C58 31 48 22 36 22Z" fill="#FFF338" stroke="#FFD600" stroke-width="2.5"/>
+            <!-- Coin front -->
+            <circle cx="46" cy="43" r="20" fill="#FFE63B" stroke="#FFB300" stroke-width="3"/>
+            <circle cx="46" cy="43" r="15" stroke="#FFB300" stroke-width="1.5"/>
+            <text x="46" y="50" text-anchor="middle" fill="#FFB300" font-family="Nunito, sans-serif" font-weight="800" font-size="22">$</text>
+            <!-- Leaves -->
+            <path d="M44 21C44 21 35 12 26 16C26 16 32 24 44 21Z" fill="#6BBF59" stroke="#2D5A27" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M45 21C45 21 53 10 63 14C63 14 57 23 45 21Z" fill="#6BBF59" stroke="#2D5A27" stroke-width="2.5" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1><span class="text-yellow">Le Mon</span><span class="text-green">-Aid</span></h1>
+          <span class="plan-badge">FREE PLAN</span>
+        </div>
+      </header>
+
+      <!-- VIEW 1: MINI SURVEY -->
+      <section id="survey-view" class="inner-card">
+        <button type="button" class="close-btn" id="reset-btn" title="Reset Form">✕</button>
+        <h2 class="card-title">Mini Survey</h2>
+
+        <form id="survey-form">
+          <div class="form-group">
+            <label for="item-name">What Item do you want to buy? <span class="req">*</span></label>
+            <input type="text" id="item-name" required placeholder="e.g., Mechanical Keyboard">
+          </div>
+
+          <div class="form-group">
+            <label for="item-price">How much is the price? <span class="req">*</span></label>
+            <input type="text" id="item-price" required placeholder="e.g., Rp 850.000">
+          </div>
+
+          <div class="form-group">
+            <label for="similar-items">Do you have any items that have similar purpose? <span class="req">*</span></label>
+            <input type="text" id="similar-items" required placeholder="e.g., Yes, a standard office keyboard">
+          </div>
+
+          <div class="form-group">
+            <label for="buy-time">When are you planning to buy?</label>
+            <input type="text" id="buy-time" placeholder="e.g., Tonight / Next payday">
+          </div>
+
+          <div class="form-group">
+            <label for="buy-reason">Reason to buy <span class="req">*</span></label>
+            <textarea id="buy-reason" rows="4" required placeholder="Tell Gemini why you want this..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="product-link">Product link</label>
+            <input type="url" id="product-link" placeholder="https://...">
+          </div>
+
+          <div class="submit-wrapper">
+            <!-- Leaf decoration above button -->
+            <svg class="btn-leaf" width="44" height="24" viewBox="0 0 44 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 22C22 22 12 10 2 14C2 14 9 23 22 22Z" fill="#6BBF59" stroke="#2D5A27" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M22 22C22 22 31 8 42 12C42 12 35 23 22 22Z" fill="#6BBF59" stroke="#2D5A27" stroke-width="2.5" stroke-linejoin="round"/>
+            </svg>
+            <button type="submit" class="btn-primary" id="ask-btn">Let’s ask Gemini</button>
+          </div>
+          
+          <p class="usage-limit" id="usage-text">Daily usage limit : 1/1</p>
+        </form>
+      </section>
+
+      <!-- VIEW 2: GEMINI'S RESPONSE -->
+      <section id="response-view" class="inner-card hidden">
+        <div class="response-top-bar">
+          <!-- Gemini Sparkle Icon -->
+          <svg class="gemini-sparkle" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2C14.8 9.2 18.8 13.2 26 14C18.8 14.8 14.8 18.8 14 26C13.2 18.8 9.2 14.8 2 14C9.2 13.2 13.2 9.2 14 2Z" fill="url(#gemini-grad)"/>
+            <defs>
+              <linearGradient id="gemini-grad" x1="2" y1="2" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#4285F4"/>
+                <stop offset="50%" stop-color="#9B72CB"/>
+                <stop offset="100%" stop-color="#D96570"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <button type="button" class="close-btn" id="back-btn" title="Back to Survey">✕</button>
+        </div>
+
+        <h2 class="card-title">What does Gemini say?</h2>
+
+        <div class="response-box" id="gemini-output">
+          <!-- Hasil respons AI akan muncul di sini -->
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" class="btn-action" id="save-btn">Save for later</button>
+          <button type="button" class="btn-action" id="buy-btn">Buy anyways</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="AI_insight.js"></script>
+</body>
+</html>

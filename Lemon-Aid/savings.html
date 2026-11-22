@@ -32,7 +32,7 @@
       <div class="tile">
         <b>Target</b>
         <div class="row"><span class="big" aria-hidden="true">🎯</span>
-          <b>katanya kalo punya 13 M = financial freedom</b></div>
+          <b id="s-target"></b></div>
       </div>
     </div>
 
@@ -42,8 +42,33 @@
         <svg id="donut" viewBox="0 0 120 120" role="img" aria-label="Diagram donat pengeluaran"></svg>
         <ul class="legend" id="legend"></ul>
       </div>
+      <button class="add-Spending-btn" id="AddSpending">Add Spending</button>
     </section>
   </main>
+
+  <!-- Pop Up Add Spending -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup-box">
+      <div class="popup-field">
+        <label for="spendCategory">Category</label>
+        <select id="spendCategory">
+          <option value="" disabled selected>Select</option>
+          <option value="food">Food</option>
+          <option value="shopping">Shopping</option>
+          <option value="others">Others</option>
+        </select>
+      </div>
+      <div class="popup-field">
+        <label for="spendPrice">Price</label>
+        <input type="text" id="spendPrice" placeholder="0" inputmode="numeric" />
+      </div>
+      <div class="popup-field">
+        <label for="spendDate">Date</label>
+        <input type="date" id="spendDate" />
+      </div>
+      <button class="popup-add-btn" id="popupAddBtn">Add</button>
+    </div>
+  </div>
 </div>
 
 <script src="navbar.js"></script>
