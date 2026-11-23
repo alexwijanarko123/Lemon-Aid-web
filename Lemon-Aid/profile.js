@@ -31,7 +31,6 @@ function initProfile() {
           ...currentUser,
           username: data.user.username || currentUser.username,
           email: data.user.email || currentUser.email,
-          gender: data.user.gender,
         });
       })
       .catch((err) => console.warn("Tidak dapat mengambil profil dari DB:", err));

@@ -28,7 +28,7 @@ function initEditProfile() {
   formatNumberInput(budgetInput);
   formatNumberInput(targetInput);
 
-  // 1. Pre-fill Username & Gender
+  // 1. Pre-fill Username 
   usernameInput.value = currentUser.username || "";
 
   // 2. Pre-fill Financial Data
@@ -49,10 +49,6 @@ function initEditProfile() {
         if (!data) return;
 
         if (data.user?.username) usernameInput.value = data.user.username;
-        if (data.user?.gender) {
-          const radio = document.querySelector(`input[name="gender"][value="${data.user.gender}"]`);
-          if (radio) radio.checked = true;
-        }
 
         if (data.finance) {
           if (Number(data.finance.income) > 0) incomeInput.value = Number(data.finance.income).toLocaleString("id-ID");
@@ -77,8 +73,6 @@ function initEditProfile() {
     errorEl.textContent = "";
 
     const newUsername = usernameInput.value.trim();
-    const genderInput = document.querySelector('input[name="gender"]:checked');
-    const newGender = genderInput ? genderInput.value : "";
     const userIncome = parsePrice(incomeInput.value);
     const userBudget = parsePrice(budgetInput.value);
     const userTarget = parsePrice(targetInput.value);
@@ -103,11 +97,10 @@ function initEditProfile() {
 
         const res = await fetch(`${BACKEND_URL}/api/user/profile`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers:  authHeaders(),
           body: JSON.stringify({
             userId: currentUser.id,
             username: newUsername,
-            gender: newGender,
             income: userIncome,
             budget: userBudget,
             target: userTarget,
@@ -138,7 +131,6 @@ function initEditProfile() {
     const userIndex = allUsers.findIndex((u) => u.email === currentUser.email);
     if (userIndex !== -1) {
       allUsers[userIndex].username = newUsername;
-      if (newGender) allUsers[userIndex].gender = newGender;
       store.set("registeredUsers", allUsers);
     }
 
@@ -146,7 +138,6 @@ function initEditProfile() {
     store.set("currentUser", {
       ...currentUser,
       username: newUsername,
-      gender: newGender || currentUser.gender,
     });
 
     // 8. Return to Profile Page

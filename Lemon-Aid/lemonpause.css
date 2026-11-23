@@ -1,3 +1,8 @@
+/* ===== Lemon Pause =====
+   Warna diambil dari desain UI:
+   gradient oranye #f3b136 -> #fcfc58, kartu waiting #f9fbaf, pill #ccee9f,
+   popup #f8f8f0, border gambar popup biru #349be6 */
+
 .lemonpause-screen {
   background:
     radial-gradient(circle at 18% 15%, rgba(220, 248, 178, 0.45), transparent 45%),
@@ -37,13 +42,24 @@
   text-align: center;
 }
 
-/* Card saat tidak ada produk yang Time Up (persis di gambar) */
+/* ---------- Daftar ---------- */
+#timeup-list,
+#waiting-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+#timeup-list { margin-bottom: 6px; }
+#waiting-list { margin-bottom: 25px; }
+
+/* ---------- "Still wanna buy?" : kosong ---------- */
 .no-timeup-card {
   padding: 32px 18px;
-  border: 2.5px solid #1fa3e5;
+  border: 2px solid #f3ad34;
   border-radius: 20px;
-  background: linear-gradient(135deg, #f5a623 0%, #ffe043 100%);
-  box-shadow: 0 6px 18px rgba(31, 163, 229, 0.12);
+  background: linear-gradient(135deg, #f3b136 0%, #fcfc58 100%);
+  box-shadow: 0 6px 18px rgba(243, 173, 52, 0.18);
   text-align: center;
 }
 
@@ -55,29 +71,65 @@
   line-height: 1.4;
 }
 
-/* Pill Lemon Pause */
+.retry-btn {
+  margin-top: 12px;
+  padding: 7px 18px;
+  border-radius: 999px;
+  background: #573708;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* ---------- "Still wanna buy?" : item yang timernya habis (bisa diklik) ---------- */
+.timeup-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #f3ad34;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f3b136 0%, #fcfc58 100%);
+  box-shadow: 0 6px 18px rgba(243, 173, 52, 0.22);
+  color: #573708;
+  text-align: left;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.timeup-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(243, 173, 52, 0.32);
+}
+
+.timeup-card .item-name { color: #573708; }
+.timeup-card .item-price { color: #573708; }
+
+.timeup-badge {
+  display: inline-block;
+  margin-top: 1px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  color: #573708;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+/* ---------- Pill ---------- */
 .pause-pill {
   width: 100%;
   margin: 20px auto 14px;
   padding: 10px 20px;
   border-radius: 999px;
-  background: #c5e89b;
+  background: #ccee9f;
   color: #335a1a;
   font-size: 14px;
   font-weight: 800;
   text-align: center;
 }
 
-/* Waiting List & Time Up List */
-#waiting-list,
-#timeup-list {
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-  margin-bottom: 25px;
-}
-
-/* Waiting Card (Sesuai di gambar) */
+/* ---------- Waiting card ---------- */
 .waiting-card {
   display: flex;
   align-items: center;
@@ -85,9 +137,9 @@
   gap: 12px;
   padding: 12px 16px;
   border-radius: 18px;
-  background: #fffce3;
+  background: #f9fbaf;
+  border: 1px solid rgba(243, 173, 52, 0.3);
   box-shadow: 0 4px 12px rgba(86, 58, 25, 0.05);
-  border: 1px solid rgba(245, 166, 35, 0.2);
 }
 
 .item-left {
@@ -98,21 +150,16 @@
   flex: 1;
 }
 
-.item-img-placeholder {
-  width: 58px;
-  height: 58px;
-  flex-shrink: 0;
-  border-radius: 13px;
-  background: #dcdcdc;
-}
-
+.item-img-placeholder,
 .item-img {
   width: 58px;
   height: 58px;
   flex-shrink: 0;
   border-radius: 13px;
-  object-fit: cover;
 }
+
+.item-img-placeholder { background: #d9d9d9; }
+.item-img { object-fit: cover; background: #d9d9d9; }
 
 .item-info {
   flex: 1;
@@ -131,14 +178,14 @@
 
 .item-price {
   margin: 3px 0 2px;
-  color: #c78300;
+  color: #d98a00;
   font-size: 12px;
   font-weight: 800;
 }
 
 .item-countdown {
   margin: 0;
-  color: #d48800;
+  color: #e8970b;
   font-size: 11px;
   font-weight: 700;
 }
@@ -150,73 +197,134 @@
   flex-shrink: 0;
 }
 
-/* Timeup Card (Dengan tombol Buy & Skip) */
-.timeup-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 18px;
-  background: #fff;
-  border: 2px solid #1fa3e5;
-  box-shadow: 0 4px 14px rgba(31, 163, 229, 0.12);
-}
-
-.timeup-badge {
-  display: inline-block;
-  color: var(--red);
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.timeup-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-.btn-buy {
-  padding: 7px 14px;
-  border-radius: 999px;
-  background: #f5a623;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 800;
-  cursor: pointer;
-  border: none;
-  transition: transform 0.15s ease;
-}
-
-.btn-buy:hover {
-  transform: scale(1.04);
-}
-
-.btn-skip {
-  padding: 6px 14px;
-  border-radius: 999px;
-  background: #e4decb;
-  color: #554228;
-  font-size: 11px;
-  font-weight: 800;
-  cursor: pointer;
-  border: none;
-  transition: transform 0.15s ease;
-}
-
-.btn-skip:hover {
-  transform: scale(1.04);
-}
-
 .empty-waiting {
   padding: 24px 16px;
   border-radius: 16px;
-  background: rgba(255, 252, 227, 0.7);
+  background: rgba(249, 251, 175, 0.55);
   border: 1px dashed #d9c9aa;
   color: #7a6e50;
   font-size: 12px;
   font-weight: 700;
+  line-height: 1.5;
   text-align: center;
+}
+
+/* ---------- Popup ---------- */
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(53, 39, 25, 0.5);
+}
+
+.modal-backdrop[hidden] { display: none; }
+
+.modal {
+  width: min(100%, 350px);
+  padding: 20px 18px 22px;
+  border: 2px solid #f3ad34;
+  border-radius: 20px;
+  background: #f8f8f0;
+  box-shadow: 0 18px 48px rgba(53, 39, 25, 0.28);
+  color: #573708;
+}
+
+.modal-title {
+  margin: 0 0 12px;
+  font-size: 15.5px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.modal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border: 2px solid #f3ad34;
+  border-radius: 14px;
+  background: #f9fbaf;
+}
+
+.modal-img {
+  width: 62px;
+  height: 62px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 3px solid #349be6;
+  border-radius: 13px;
+  background: #d9d9d9;
+}
+
+.modal-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.modal-name {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.modal-price {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.modal-label {
+  margin: 14px 0 4px;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.modal-link {
+  margin: 0 0 16px;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.modal-link.is-empty { color: #8a7a5c; font-style: italic; font-weight: 600; }
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-modal {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 12px;
+  background: #f3ad34;
+  box-shadow: 0 3px 6px rgba(87, 55, 8, 0.25);
+  color: #573708;
+  font-size: 15px;
+  font-weight: 800;
+  transition: transform 0.15s ease;
+}
+
+.btn-modal:hover:not(:disabled) { transform: translateY(-1px); }
+.btn-modal:disabled { opacity: 0.6; cursor: wait; }
+
+@media (prefers-reduced-motion: reduce) {
+  .timeup-card, .btn-modal { transition: none; }
 }

@@ -289,7 +289,6 @@ app.post("/api/finance", requireAuth, async (req, res) => {
 app.post("/api/user/profile", requireAuth, async (req, res) => {
   const userId = req.userId;
   const username = typeof req.body?.username === "string" ? req.body.username.trim() : "";
-  const gender = typeof req.body?.gender === "string" ? req.body.gender.trim().slice(0, 20) : "";
 
   if (!username) {
     return res.status(400).json({ message: "Username wajib diisi." });
@@ -325,15 +324,15 @@ app.post("/api/user/profile", requireAuth, async (req, res) => {
     }
 
     await pool.query(
-      "UPDATE users SET username = ?, gender = ? WHERE id = ?",
-      [username, gender, userId]
+      "UPDATE users SET username = ? WHERE id = ?",
+      [username, userId]
     );
 
     await upsertFinance(userId, { income, budget, target });
 
     res.json({
       message: "Profil dan keuangan berhasil diperbarui!",
-      user: { id: userId, username, gender },
+      user: { id: userId, username },
       finance: { income, budget, target },
     });
   } catch (err) {
@@ -348,7 +347,7 @@ app.get("/api/user/profile", requireAuth, async (req, res) => {
 
   try {
     const [users] = await pool.query(
-      "SELECT id, username, email, gender FROM users WHERE id = ? LIMIT 1",
+      "SELECT id, username, email FROM users WHERE id = ? LIMIT 1",
       [userId]
     );
 

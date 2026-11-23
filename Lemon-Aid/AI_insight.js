@@ -4,10 +4,13 @@ const surveyForm = document.getElementById('survey-form');
 const geminiOutput = document.getElementById('gemini-output');
 const askBtn = document.getElementById('ask-btn');
 
+const BACKEND_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:3000"
+  : "https://lemon-aid-web-server.vercel.app";
 // Ambil userId jika user sudah login dan tersimpan di localStorage (opsional)
 function getCurrentUserId() {
   try {
-    const rawUser = localStorage.getItem('user') || localStorage.getItem('lemonAidUser');
+    const rawUser = localStorage.getItem('currentUser');
     if (!rawUser) return null;
     const parsed = JSON.parse(rawUser);
     return Number(parsed?.id || parsed?.userId) || null;
@@ -21,7 +24,6 @@ async function fetchGeminiInsight(surveyData) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      userId: getCurrentUserId(),
       ...surveyData,
     }),
   });
@@ -90,11 +92,10 @@ document.getElementById('save-btn').addEventListener('click', async () => {
   // Kalau user login & harga valid, bisa sekalian simpan ke /api/timers (default 24 jam = 86400 detik)
   if (userId && itemName && price > 0) {
     try {
-      const res = await fetch('/api/timers', {
+      const res = await fetch(`${BACKEND_URL}/api/timers`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({
-          userId,
           name: itemName,
           price,
           url: link,
@@ -103,16 +104,22 @@ document.getElementById('save-btn').addEventListener('click', async () => {
           durationSeconds: 86400,
         }),
       });
+      if (handleUnauthorized(res)) return;
+
       if (res.ok) {
-        alert('Item disimpan ke Lemon Pause (24 jam) di database! 🍋');
+        alert('Item disimpan ke Lemon Pause (24 jam)! 🍋');
+        window.location.href = 'lemonpause.html';
         return;
       }
-    } catch {
-      // Fallback ke notifikasi lokal jika gagal
-    }
-  }
 
-  alert('Item disimpan ke daftar Lemon Pause (Save for later)! 🍋');
+      const data = await res.json().catch(() => ({}));
+      alert(data.message || 'Gagal menyimpan item.');
+    } catch {
+      alert('Tidak bisa terhubung ke server.');
+    }
+  } else {
+    alert('Isi nama barang dan harga yang valid, dan pastikan kamu sudah login ya.');
+  }
 });
 
 document.getElementById('buy-btn').addEventListener('click', () => {
@@ -121,5 +128,6 @@ document.getElementById('buy-btn').addEventListener('click', () => {
     window.open(link, '_blank', 'noopener,noreferrer');
   } else {
     alert('Dicatat sebagai "Buy anyways". Pastikan tetap sesuai budget ya!');
+    window.location.href = 'homepage.html';
   }
 });

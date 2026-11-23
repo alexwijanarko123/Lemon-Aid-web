@@ -3,19 +3,33 @@ import express from "express";
 import rateLimit from "express-rate-limit";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { analyzeProduct, AnalysisError } from "./lib/analyze.js";
 import cors from "cors";
 import bcrypt from "bcryptjs";
+import { analyzeProduct, AnalysisError } from "./lib/analyze.js";
 import { pool } from "./lib/db.js";
-
+import { signToken, requireAuth, optionalAuth } from "./lib/auth.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FRONTEND_DIR = path.resolve(__dirname, process.env.FRONTEND_DIR || "../Lemon-Aid");
 const PORT = process.env.PORT || 3000;
 
+const MAX_PRICE = 1e12;
+const MAX_TIMER_SECONDS = 60 * 60 * 24 * 30; // maksimal 30 hari
+
 const app = express();
-app.use(cors()); // Allow requests from your frontend domain
+
+// Di belakang proxy (Vercel, Nginx, dll) set TRUST_PROXY=1 di .env supaya rate limiter
+// membaca IP asli user. Jangan diaktifkan kalau server diakses langsung (IP bisa dipalsukan).
+if (process.env.TRUST_PROXY) app.set("trust proxy", Number(process.env.TRUST_PROXY) || 1);
+
+// CORS hanya aktif kalau CORS_ORIGIN diset di .env (mis. frontend jalan di domain/port lain).
+// Karena frontend disajikan dari server yang sama, default-nya tidak perlu CORS.
+if (process.env.CORS_ORIGIN) {
+  app.use(cors({ origin: process.env.CORS_ORIGIN.split(",").map((s) => s.trim()) }));
+}
 app.use(express.json({ limit: "10kb" }));
+
+// ================= RATE LIMITER =================
 
 // Tiap request memakai kuota Gemini, jadi dibatasi per IP
 const limiter = rateLimit({
@@ -26,12 +40,54 @@ const limiter = rateLimit({
   message: { message: "Terlalu banyak permintaan. Coba lagi sebentar lagi." },
 });
 
+// Limiter khusus login / register / ganti password (anti brute-force)
+const authLimiter = rateLimit({
+  windowMs: 60_000,
+  limit: 8,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Terlalu banyak percobaan. Coba lagi sebentar lagi." },
+});
+
+// ================= HELPER =================
+
+function isValidDate(str) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(str)) return false;
+  const d = new Date(`${str}T00:00:00Z`);
+  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === str;
+}
+
+async function upsertFinance(userId, { income, budget, target }) {
+  const [existing] = await pool.query("SELECT id FROM finance WHERE user_id = ? LIMIT 1", [userId]);
+  if (existing.length > 0) {
+    await pool.query(
+      "UPDATE finance SET income = ?, budget = ?, target = ? WHERE user_id = ?",
+      [income, budget, target, userId]
+    );
+  } else {
+    await pool.query(
+      "INSERT INTO finance (user_id, income, budget, target) VALUES (?, ?, ?, ?)",
+      [userId, income, budget, target]
+    );
+  }
+}
+
+// Angka opsional: kalau tidak dikirim -> pakai nilai lama; kalau dikirim tapi tidak valid -> null
+function parseMoney(value, fallback) {
+  if (value === undefined || value === null || value === "") return fallback;
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < 0 || n > MAX_PRICE) return null;
+  return n;
+}
+
+// ================= ANALYZE PRODUCT =================
+
 app.post("/api/analyze-product", limiter, async (req, res) => {
   const name = typeof req.body?.name === "string" ? req.body.name.trim().slice(0, 120) : "";
   const merchant = typeof req.body?.merchant === "string" ? req.body.merchant.trim().slice(0, 100) : "";
   const price = Number(req.body?.price);
 
-  if (!name || !Number.isFinite(price) || price <= 0 || price > 1e12) {
+  if (!name || !Number.isFinite(price) || price <= 0 || price > MAX_PRICE) {
     return res.status(400).json({ message: "Nama dan harga barang harus diisi dengan benar." });
   }
 
@@ -47,14 +103,18 @@ app.post("/api/analyze-product", limiter, async (req, res) => {
 
 // ================= AUTH API (MySQL) =================
 
-// 1. Register Endpoint
-app.post("/api/auth/register", async (req, res) => {
+// 1. Register
+app.post("/api/auth/register", authLimiter, async (req, res) => {
   const username = typeof req.body?.username === "string" ? req.body.username.trim() : "";
   const email = typeof req.body?.email === "string" ? req.body.email.trim().toLowerCase() : "";
   const password = typeof req.body?.password === "string" ? req.body.password : "";
 
   if (!username || !email || !password) {
     return res.status(400).json({ message: "Semua kolom wajib diisi." });
+  }
+
+  if (username.length > 50) {
+    return res.status(400).json({ message: "Username maksimal 50 karakter." });
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -65,8 +125,12 @@ app.post("/api/auth/register", async (req, res) => {
     return res.status(400).json({ message: "Password minimal harus 8 karakter." });
   }
 
+  // bcrypt hanya membaca 72 byte pertama
+  if (Buffer.byteLength(password, "utf8") > 72) {
+    return res.status(400).json({ message: "Password terlalu panjang (maksimal 72 karakter)." });
+  }
+
   try {
-    // Cek apakah username atau email sudah ada
     const [existing] = await pool.query(
       "SELECT id FROM users WHERE LOWER(email) = ? OR LOWER(username) = ? LIMIT 1",
       [email, username.toLowerCase()]
@@ -76,27 +140,31 @@ app.post("/api/auth/register", async (req, res) => {
       return res.status(400).json({ message: "Username atau email sudah digunakan." });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Simpan user baru
     const [result] = await pool.query(
       "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
       [username, email, hashedPassword]
     );
 
+    const user = { id: result.insertId, username, email };
+
     res.status(201).json({
       message: "Registrasi berhasil!",
-      user: { id: result.insertId, username, email },
+      user,
+      token: signToken(user),
     });
   } catch (err) {
+    if (err?.code === "ER_DUP_ENTRY") {
+      return res.status(400).json({ message: "Username atau email sudah digunakan." });
+    }
     console.error("[auth/register]", err);
     res.status(500).json({ message: "Gagal mendaftar. Terjadi kesalahan pada server/database." });
   }
 });
 
-// 2. Login Endpoint
-app.post("/api/auth/login", async (req, res) => {
+// 2. Login
+app.post("/api/auth/login", authLimiter, async (req, res) => {
   const identifier = (typeof req.body?.identifier === "string"
     ? req.body.identifier
     : typeof req.body?.username === "string"
@@ -127,7 +195,6 @@ app.post("/api/auth/login", async (req, res) => {
       return res.status(401).json({ message: "Username/Email atau Password salah!" });
     }
 
-    // Cek apakah user sudah punya data finance di DB
     let userFinance = null;
     try {
       const [finances] = await pool.query(
@@ -135,10 +202,13 @@ app.post("/api/auth/login", async (req, res) => {
         [user.id]
       );
       if (finances.length > 0) userFinance = finances[0];
-    } catch {}
+    } catch (finErr) {
+      console.warn("[auth/login/finance]", finErr?.message || finErr);
+    }
 
     res.json({
       message: "Login berhasil!",
+      token: signToken(user),
       user: {
         id: user.id,
         username: user.username,
@@ -153,18 +223,22 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-// 2b. Change Password Endpoint
-app.post("/api/auth/change-password", async (req, res) => {
-  const userId = Number(req.body?.userId);
+// 2b. Change Password
+app.post("/api/auth/change-password", authLimiter, requireAuth, async (req, res) => {
+  const userId = req.userId;
   const currentPassword = typeof req.body?.currentPassword === "string" ? req.body.currentPassword : "";
   const newPassword = typeof req.body?.newPassword === "string" ? req.body.newPassword : "";
 
-  if (!userId || !currentPassword || !newPassword) {
+  if (!currentPassword || !newPassword) {
     return res.status(400).json({ message: "Semua kolom password wajib diisi." });
   }
 
   if (newPassword.length < 8) {
     return res.status(400).json({ message: "Password baru minimal harus 8 karakter." });
+  }
+
+  if (Buffer.byteLength(newPassword, "utf8") > 72) {
+    return res.status(400).json({ message: "Password baru terlalu panjang (maksimal 72 karakter)." });
   }
 
   try {
@@ -177,8 +251,7 @@ app.post("/api/auth/change-password", async (req, res) => {
       return res.status(404).json({ message: "User tidak ditemukan." });
     }
 
-    const user = rows[0];
-    const isCurrentMatch = await bcrypt.compare(currentPassword, user.password);
+    const isCurrentMatch = await bcrypt.compare(currentPassword, rows[0].password);
 
     if (!isCurrentMatch) {
       return res.status(401).json({ message: "Current Password yang Anda masukkan salah!" });
@@ -196,35 +269,19 @@ app.post("/api/auth/change-password", async (req, res) => {
 
 // ================= PROFILE & FINANCE API (MySQL) =================
 
-// 3. Simpan / Perbarui Data Finance dari Complete Profile
-app.post("/api/finance", async (req, res) => {
-  const userId = Number(req.body?.userId);
-  const income = Number(req.body?.income) || 0;
-  const budget = Number(req.body?.budget) || 0;
-  const target = Number(req.body?.target) || 0;
+// 3. Simpan / perbarui data finance (Complete Profile)
+app.post("/api/finance", requireAuth, async (req, res) => {
+  const userId = req.userId;
+  const income = parseMoney(req.body?.income, 0);
+  const budget = parseMoney(req.body?.budget, 0);
+  const target = parseMoney(req.body?.target, 0);
 
-  if (!userId) {
-    return res.status(400).json({ message: "User ID wajib disertakan." });
+  if (income === null || budget === null || target === null) {
+    return res.status(400).json({ message: "Nilai income, budget, atau target tidak valid." });
   }
 
   try {
-    const [existing] = await pool.query(
-      "SELECT id FROM finance WHERE user_id = ? LIMIT 1",
-      [userId]
-    );
-
-    if (existing.length > 0) {
-      await pool.query(
-        "UPDATE finance SET income = ?, budget = ?, target = ? WHERE user_id = ?",
-        [income, budget, target, userId]
-      );
-    } else {
-      await pool.query(
-        "INSERT INTO finance (user_id, income, budget, target) VALUES (?, ?, ?, ?)",
-        [userId, income, budget, target]
-      );
-    }
-
+    await upsertFinance(userId, { income, budget, target });
     res.json({ message: "Data keuangan berhasil disimpan di database!", finance: { income, budget, target } });
   } catch (err) {
     console.error("[finance/save]", err);
@@ -232,21 +289,20 @@ app.post("/api/finance", async (req, res) => {
   }
 });
 
-// 4. Update Profile & Finance dari Edit Profile
-app.post("/api/user/profile", async (req, res) => {
-  const userId = Number(req.body?.userId);
+// 4. Update profile & finance (Edit Profile)
+app.post("/api/user/profile", requireAuth, async (req, res) => {
+  const userId = req.userId;
   const username = typeof req.body?.username === "string" ? req.body.username.trim() : "";
-  const gender = typeof req.body?.gender === "string" ? req.body.gender : "";
-  const income = Number(req.body?.income) || 0;
-  const budget = Number(req.body?.budget) || 0;
-  const target = Number(req.body?.target) || 0;
 
-  if (!userId || !username) {
-    return res.status(400).json({ message: "User ID dan Username wajib diisi." });
+  if (!username) {
+    return res.status(400).json({ message: "Username wajib diisi." });
+  }
+
+  if (username.length > 50) {
+    return res.status(400).json({ message: "Username maksimal 50 karakter." });
   }
 
   try {
-    // Cek apakah username baru sudah dipakai orang lain
     const [taken] = await pool.query(
       "SELECT id FROM users WHERE LOWER(username) = ? AND id != ? LIMIT 1",
       [username.toLowerCase(), userId]
@@ -256,33 +312,31 @@ app.post("/api/user/profile", async (req, res) => {
       return res.status(400).json({ message: "Username sudah digunakan oleh akun lain." });
     }
 
-    // Update users
-    await pool.query(
-      "UPDATE users SET username = ?, gender = ? WHERE id = ?",
-      [username, gender, userId]
-    );
-
-    // Update / Insert finance
-    const [existing] = await pool.query(
-      "SELECT id FROM finance WHERE user_id = ? LIMIT 1",
+    // Field finance yang tidak dikirim tetap memakai nilai lama (tidak di-reset ke 0)
+    const [current] = await pool.query(
+      "SELECT income, budget, target FROM finance WHERE user_id = ? LIMIT 1",
       [userId]
     );
+    const old = current[0] || { income: 0, budget: 0, target: 0 };
 
-    if (existing.length > 0) {
-      await pool.query(
-        "UPDATE finance SET income = ?, budget = ?, target = ? WHERE user_id = ?",
-        [income, budget, target, userId]
-      );
-    } else {
-      await pool.query(
-        "INSERT INTO finance (user_id, income, budget, target) VALUES (?, ?, ?, ?)",
-        [userId, income, budget, target]
-      );
+    const income = parseMoney(req.body?.income, Number(old.income));
+    const budget = parseMoney(req.body?.budget, Number(old.budget));
+    const target = parseMoney(req.body?.target, Number(old.target));
+
+    if (income === null || budget === null || target === null) {
+      return res.status(400).json({ message: "Nilai income, budget, atau target tidak valid." });
     }
+
+    await pool.query(
+      "UPDATE users SET username = ? WHERE id = ?",
+      [username, userId]
+    );
+
+    await upsertFinance(userId, { income, budget, target });
 
     res.json({
       message: "Profil dan keuangan berhasil diperbarui!",
-      user: { id: userId, username, gender },
+      user: { id: userId, username },
       finance: { income, budget, target },
     });
   } catch (err) {
@@ -291,16 +345,13 @@ app.post("/api/user/profile", async (req, res) => {
   }
 });
 
-// 5. Get Profile & Finance by User ID (untuk halaman Profile)
-app.get("/api/user/profile/:userId", async (req, res) => {
-  const userId = Number(req.params.userId);
-  if (!userId) {
-    return res.status(400).json({ message: "User ID tidak valid." });
-  }
+// 5. Ambil profile & finance milik user yang login
+app.get("/api/user/profile", requireAuth, async (req, res) => {
+  const userId = req.userId;
 
   try {
     const [users] = await pool.query(
-      "SELECT id, username, email, gender FROM users WHERE id = ? LIMIT 1",
+      "SELECT id, username, email FROM users WHERE id = ? LIMIT 1",
       [userId]
     );
 
@@ -326,14 +377,18 @@ app.get("/api/user/profile/:userId", async (req, res) => {
 // ================= SPENDING API (MySQL) =================
 
 // Simpan pengeluaran baru
-app.post("/api/spending", async (req, res) => {
-  const userId = Number(req.body?.userId);
+app.post("/api/spending", requireAuth, async (req, res) => {
+  const userId = req.userId;
   const category = typeof req.body?.category === "string" ? req.body.category : "";
-  const price = Number(req.body?.price) || 0;
+  const price = Number(req.body?.price);
   const date = typeof req.body?.date === "string" ? req.body.date.trim() : "";
 
-  if (!userId || !["food", "shopping", "others"].includes(category) || price <= 0 || !date) {
-    return res.status(400).json({ message: "Data spending tidak lengkap." });
+  if (
+    !["food", "shopping", "others"].includes(category) ||
+    !Number.isFinite(price) || price <= 0 || price > MAX_PRICE ||
+    !isValidDate(date)
+  ) {
+    return res.status(400).json({ message: "Data spending tidak lengkap atau tidak valid (tanggal harus YYYY-MM-DD)." });
   }
 
   try {
@@ -352,26 +407,24 @@ app.post("/api/spending", async (req, res) => {
   }
 });
 
-// Ambil ringkasan spending bulan ini per kategori
-app.get("/api/spending/:userId", async (req, res) => {
-  const userId = Number(req.params.userId);
-  if (!userId) {
-    return res.status(400).json({ message: "User ID tidak valid." });
-  }
+// Ringkasan spending bulan ini per kategori
+app.get("/api/spending", requireAuth, async (req, res) => {
+  const userId = req.userId;
 
   try {
-    // Ambil total per kategori untuk bulan ini
     const [rows] = await pool.query(
       `SELECT category, SUM(price) AS total
        FROM spending
-       WHERE user_id = ? AND MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())
+       WHERE user_id = ?
+         AND date >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+         AND date < DATE_FORMAT(CURDATE() + INTERVAL 1 MONTH, '%Y-%m-01')
        GROUP BY category`,
       [userId]
     );
 
     const summary = { food: 0, shopping: 0, others: 0 };
     rows.forEach((r) => {
-      if (summary.hasOwnProperty(r.category)) {
+      if (Object.hasOwn(summary, r.category)) {
         summary[r.category] = Number(r.total);
       }
     });
@@ -385,37 +438,44 @@ app.get("/api/spending/:userId", async (req, res) => {
 
 // ================= TIMER / LEMON PAUSE API (MySQL) =================
 
-// 6. Simpan Timer baru (dari productdesc.js saat user klik "Set Timer")
-app.post("/api/timers", async (req, res) => {
-  const userId = Number(req.body?.userId);
+// 6. Simpan timer baru (produk + timer dalam satu transaksi)
+app.post("/api/timers", requireAuth, async (req, res) => {
+  const userId = req.userId;
   const name = typeof req.body?.name === "string" ? req.body.name.trim().slice(0, 150) : "";
-  const price = Number(req.body?.price) || 0;
-  const url = typeof req.body?.url === "string" ? req.body.url.trim() : null;
-  const imageUrl = typeof req.body?.imageUrl === "string" ? req.body.imageUrl.trim().slice(0, 500) : null;
-  const reason = typeof req.body?.reason === "string" ? req.body.reason.trim() : "";
-  const durationSeconds = Number(req.body?.durationSeconds) || 0;
+  const price = Number(req.body?.price);
+  const url = typeof req.body?.url === "string" && req.body.url.trim() ? req.body.url.trim().slice(0, 500) : null;
+  const imageUrl = typeof req.body?.imageUrl === "string" && req.body.imageUrl.trim() ? req.body.imageUrl.trim().slice(0, 500) : null;
+  const reason = typeof req.body?.reason === "string" ? req.body.reason.trim().slice(0, 500) : "";
+  const durationSeconds = Number(req.body?.durationSeconds);
 
-  if (!userId || !name || price <= 0 || durationSeconds <= 0) {
-    return res.status(400).json({ message: "Data timer tidak lengkap." });
+  if (
+    !name ||
+    !Number.isFinite(price) || price <= 0 || price > MAX_PRICE ||
+    !Number.isFinite(durationSeconds) || durationSeconds <= 0 || durationSeconds > MAX_TIMER_SECONDS
+  ) {
+    return res.status(400).json({ message: "Data timer tidak lengkap atau tidak valid." });
   }
 
+  let conn;
   try {
-    // 1. Simpan produk ke tabel products
-    const [productResult] = await pool.query(
+    conn = await pool.getConnection();
+    await conn.beginTransaction();
+
+    const [productResult] = await conn.query(
       "INSERT INTO products (user_id, name, price, url, image_url, reason) VALUES (?, ?, ?, ?, ?, ?)",
       [userId, name, price, url, imageUrl, reason]
     );
     const productId = productResult.insertId;
 
-    // 2. Hitung end_time
     const startTime = new Date();
     const endTime = new Date(startTime.getTime() + durationSeconds * 1000);
 
-    // 3. Simpan timer ke tabel timer
-    const [timerResult] = await pool.query(
+    const [timerResult] = await conn.query(
       "INSERT INTO timer (user_id, product_id, start_time, end_time, status) VALUES (?, ?, ?, ?, 'waiting')",
       [userId, productId, startTime, endTime]
     );
+
+    await conn.commit();
 
     res.status(201).json({
       message: "Timer berhasil disimpan!",
@@ -432,17 +492,19 @@ app.post("/api/timers", async (req, res) => {
       },
     });
   } catch (err) {
+    if (conn) {
+      try { await conn.rollback(); } catch {}
+    }
     console.error("[timers/create]", err);
     res.status(500).json({ message: "Gagal menyimpan timer ke database." });
+  } finally {
+    if (conn) conn.release();
   }
 });
 
-// 7. Ambil semua timer milik user (untuk lemonpause.js)
-app.get("/api/timers/:userId", async (req, res) => {
-  const userId = Number(req.params.userId);
-  if (!userId) {
-    return res.status(400).json({ message: "User ID tidak valid." });
-  }
+// 7. Ambil semua timer aktif milik user yang login
+app.get("/api/timers", requireAuth, async (req, res) => {
+  const userId = req.userId;
 
   try {
     const [rows] = await pool.query(
@@ -475,19 +537,20 @@ app.get("/api/timers/:userId", async (req, res) => {
 });
 
 // 8. Update status timer (Buy / Skip)
-app.post("/api/timers/:id/action", async (req, res) => {
+app.post("/api/timers/:id/action", requireAuth, async (req, res) => {
+  const userId = req.userId;
   const timerId = Number(req.params.id);
   const action = typeof req.body?.action === "string" ? req.body.action : "";
-  const userId = Number(req.body?.userId);
 
-  if (!timerId || !userId || !["bought", "skipped"].includes(action)) {
+  if (!timerId || !["bought", "skipped"].includes(action)) {
     return res.status(400).json({ message: "Data aksi tidak valid." });
   }
 
   try {
-    // Pastikan timer milik user ini dan masih berstatus waiting
     const [rows] = await pool.query(
-      "SELECT t.id, t.product_id, p.name, p.price FROM timer t JOIN products p ON t.product_id = p.id WHERE t.id = ? AND t.user_id = ? AND t.status = 'waiting' LIMIT 1",
+      `SELECT t.id, t.product_id, p.name, p.price
+       FROM timer t JOIN products p ON t.product_id = p.id
+       WHERE t.id = ? AND t.user_id = ? AND t.status = 'waiting' LIMIT 1`,
       [timerId, userId]
     );
 
@@ -495,7 +558,15 @@ app.post("/api/timers/:id/action", async (req, res) => {
       return res.status(404).json({ message: "Timer tidak ditemukan atau sudah diproses." });
     }
 
-    await pool.query("UPDATE timer SET status = ? WHERE id = ?", [action, timerId]);
+    // Kondisi status = 'waiting' dicek lagi supaya aman dari klik ganda
+    const [upd] = await pool.query(
+      "UPDATE timer SET status = ? WHERE id = ? AND user_id = ? AND status = 'waiting'",
+      [action, timerId, userId]
+    );
+
+    if (upd.affectedRows === 0) {
+      return res.status(404).json({ message: "Timer tidak ditemukan atau sudah diproses." });
+    }
 
     res.json({
       message: action === "bought" ? "Barang ditandai sebagai dibeli." : "Barang berhasil di-skip! Uang berhasil dihemat.",
@@ -507,16 +578,15 @@ app.post("/api/timers/:id/action", async (req, res) => {
   }
 });
 
-
 // ================= MINI SURVEY GEMINI INSIGHT API =================
 
-app.post("/api/mini-survey-insight", limiter, async (req, res) => {
+app.post("/api/mini-survey-insight", limiter, optionalAuth, async (req, res) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ message: "GEMINI_API_KEY belum diset di file .env." });
   }
 
-  const userId = Number(req.body?.userId) || null;
+  const userId = req.userId || null; // dari token, bukan dari body
   const itemName = typeof req.body?.itemName === "string" ? req.body.itemName.trim().slice(0, 150) : "";
   const itemPrice = typeof req.body?.itemPrice === "string"
     ? req.body.itemPrice.trim().slice(0, 60)
@@ -530,7 +600,7 @@ app.post("/api/mini-survey-insight", limiter, async (req, res) => {
     return res.status(400).json({ message: "Field survei bertanda (*) wajib diisi." });
   }
 
-  // Opsional: ambil konteks keuangan user jika userId tersedia
+  // Opsional: konteks keuangan user jika sedang login
   let financeContext = "";
   if (userId) {
     try {
@@ -541,7 +611,9 @@ app.post("/api/mini-survey-insight", limiter, async (req, res) => {
       const [spendRows] = await pool.query(
         `SELECT category, SUM(price) AS total
          FROM spending
-         WHERE user_id = ? AND MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())
+         WHERE user_id = ?
+           AND date >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+           AND date < DATE_FORMAT(CURDATE() + INTERVAL 1 MONTH, '%Y-%m-01')
          GROUP BY category`,
         [userId]
       );
@@ -582,21 +654,24 @@ Gunakan bahasa Indonesia yang santai, hangat, dan mudah dibaca (maksimal 160 kat
 
   try {
     const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
 
     const geminiRes = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey, // lewat header, bukan di URL
+      },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
       }),
+      signal: AbortSignal.timeout(20_000),
     });
 
-    const data = await geminiRes.json();
+    const data = await geminiRes.json().catch(() => ({}));
     if (!geminiRes.ok) {
-      return res.status(geminiRes.status).json({
-        message: data?.error?.message || "Gagal mendapatkan respons dari Gemini API.",
-      });
+      console.error("[mini-survey-insight/gemini]", geminiRes.status, data?.error?.message);
+      return res.status(502).json({ message: "Gagal mendapatkan respons dari layanan AI. Coba lagi nanti." });
     }
 
     const insight = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
@@ -606,10 +681,15 @@ Gunakan bahasa Indonesia yang santai, hangat, dan mudah dibaca (maksimal 160 kat
 
     return res.json({ insight });
   } catch (err) {
+    if (err?.name === "TimeoutError" || err?.name === "AbortError") {
+      return res.status(504).json({ message: "Layanan AI terlalu lama merespons. Coba lagi." });
+    }
     console.error("[mini-survey-insight]", err);
     return res.status(500).json({ message: "Gagal menghubungi layanan Gemini AI." });
   }
 });
+
+// ================= STATIC FILES =================
 
 app.use("/images", express.static(path.resolve(__dirname, "../images")));
 

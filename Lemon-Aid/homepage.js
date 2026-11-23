@@ -3,9 +3,6 @@ const currentUser = requireLogin();
 if (currentUser) initHome();
 
 const DEFAULT_PURCHASES = [
-  { category: "Food", date: "16 December 2025", amount: 1000000 },
-  { category: "Food", date: "7 December 2025", amount: 700000 },
-  { category: "Food", date: "29 November 2025", amount: 30000 },
 ];
 
 function initHome() {

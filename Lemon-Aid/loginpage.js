@@ -38,6 +38,7 @@ if (form && errorMessage) {
 
       // Simpan sesi login user aktif
       try {
+        localStorage.setItem('token', data.token);
         localStorage.setItem('currentUser', JSON.stringify({
           id: data.user.id,
           username: data.user.username,

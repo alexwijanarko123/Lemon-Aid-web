@@ -16,6 +16,8 @@ function logout() {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('lemon_finance');
     localStorage.removeItem('lemon_current');
+    localStorage.removeItem('lemon_savings');
+    localStorage.removeItem('lemon_history');
   } catch {}
   window.location.href = "loginpage.html";
 }

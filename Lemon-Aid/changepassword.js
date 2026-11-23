@@ -49,7 +49,7 @@ function initChangePassword() {
 
         const res = await fetch(`${BACKEND_URL}/api/auth/change-password`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers:  authHeaders(),
           body: JSON.stringify({
             userId: currentUser.id,
             currentPassword,

@@ -19,14 +19,41 @@
     </div>
 
     <h2 class="title">Still wanna buy?</h2>
+    <!-- Item yang timernya sudah habis. Klik item untuk membuka popup -->
     <div id="timeup-list"></div>
 
     <div class="pause-pill">Lemon Pause</div>
+    <!-- Item yang masih menunggu (hitung mundur) -->
     <div id="waiting-list"></div>
   </main>
+
+  <!-- Popup: ada DI LUAR #timeup-list / #waiting-list supaya tidak ikut ter-render ulang -->
+  <div class="modal-backdrop" id="buy-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h3 class="modal-title" id="modal-title">Do you still wish to buy this item?</h3>
+
+      <div class="modal-item">
+        <div class="modal-img" id="modal-img"></div>
+        <div class="modal-item-info">
+          <p class="modal-name" id="modal-name"></p>
+          <p class="modal-price" id="modal-price"></p>
+        </div>
+      </div>
+
+      <h4 class="modal-label">Link</h4>
+      <p class="modal-link" id="modal-link"></p>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-modal" id="btn-nope">Nope</button>
+        <button type="button" class="btn-modal" id="btn-later">Later</button>
+        <button type="button" class="btn-modal" id="btn-buy">Buy</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="navbar.js"></script>
+<script src="api.js"></script>
 <script src="lemonpause.js"></script>
 </body>
 </html>
