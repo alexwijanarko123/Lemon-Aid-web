@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edit Profile · Le Mon-Aid</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="screen">
+    <div class="screen__bg"></div>
+    <div class="panel" style="--y:54px"></div>
+    <h1 class="brand">Le Mon-Aid</h1>
+    <p class="plan">FREE PLAN</p>
+    <div class="logo"><img src="assets/logo.png" alt="Le Mon-Aid logo"></div>
+
+    <a class="abs close" href="profile.html" aria-label="Close" style="--x:368px;--y:150px;--w:40px;--h:40px"><img src="assets/close-edit-profile.svg" alt=""></a>
+
+    <img class="abs" src="assets/avatar-edit.svg" alt="" style="--x:174px;--y:169px;--w:93px;--h:93px">
+    <img class="abs abs--ghost" src="assets/edit-pencil.svg" alt="" style="--x:238px;--y:230px;--w:25px;--h:25px">
+
+    <form action="profile.html">
+      <label class="txt fs-14 f-bold c-brown" for="username" style="--x:58px;--y:286px">Username</label>
+      <input class="pfield" id="username" name="username" type="text" value="Alexander" style="--y:305px">
+      <img class="abs abs--ghost" src="assets/edit-pencil.svg" alt="" style="--x:353px;--y:312px;--w:25px;--h:25px">
+
+      <label class="txt fs-14 f-bold c-brown" for="gender" style="--x:58px;--y:356px">Gender</label>
+      <input class="pfield" id="gender" name="gender" type="text" value="Male" style="--y:375px">
+      <img class="abs abs--ghost" src="assets/edit-pencil.svg" alt="" style="--x:353px;--y:383px;--w:25px;--h:25px">
+
+      <label class="txt fs-14 f-bold c-brown" for="age" style="--x:58px;--y:426px">Age</label>
+      <input class="pfield" id="age" name="age" type="text" inputmode="numeric" value="1" style="--y:445px">
+      <img class="abs abs--ghost" src="assets/edit-pencil.svg" alt="" style="--x:353px;--y:453px;--w:25px;--h:25px">
+
+      <label class="txt fs-14 f-bold c-brown" for="phone" style="--x:58px;--y:496px">Phone Number</label>
+      <input class="pfield" id="phone" name="phone" type="tel" value="081234567890" style="--y:515px">
+      <img class="abs abs--ghost" src="assets/edit-pencil.svg" alt="" style="--x:353px;--y:523px;--w:25px;--h:25px">
+
+      <label class="txt fs-14 f-bold c-brown" for="target-saving" style="--x:58px;--y:566px">Target Saving</label>
+      <input class="pfield" id="target-saving" name="target-saving" type="text" inputmode="numeric" value="081234567890" style="--y:585px">
+      <img class="abs abs--ghost" src="assets/edit-pencil.svg" alt="" style="--x:352px;--y:593px;--w:25px;--h:25px">
+
+      <label class="txt fs-14 f-bold c-brown" for="shopping-budget" style="--x:58px;--y:636px">Shopping Budget</label>
+      <input class="pfield" id="shopping-budget" name="shopping-budget" type="text" inputmode="numeric" value="081234567890" style="--y:655px">
+      <img class="abs abs--ghost" src="assets/edit-pencil.svg" alt="" style="--x:351px;--y:662px;--w:25px;--h:25px">
+
+      <label class="txt fs-14 f-bold c-brown" for="monthly-income" style="--x:58px;--y:706px">Monthly Income</label>
+      <input class="pfield" id="monthly-income" name="monthly-income" type="text" inputmode="numeric" value="081234567890" style="--y:725px">
+      <img class="abs abs--ghost" src="assets/edit-pencil.svg" alt="" style="--x:352px;--y:732px;--w:25px;--h:25px">
+
+      <a class="btn-green" href="#change-password" style="--x:118px;--y:809px;--w:204px;--h:51px">Change Password</a>
+      <button class="btn-green" type="submit" style="--x:118px;--y:872px;--w:204px;--h:51px">Save Changes</button>
+    </form>
+
+    <!-- Popup: Change password -->
+    <div class="modal" id="change-password" role="dialog" aria-label="Change password">
+      <a class="modal__scrim" href="#" aria-label="Close"></a>
+      <form class="popup popup--password" action="#" style="--pw:440px;--ph:400px">
+        <div class="popup__box"></div>
+        <label class="txt txt--inter fs-20" for="old-password" style="--x:28px;--y:30px">Old Password</label>
+        <input class="field field--pw" id="old-password" name="old-password" type="password" autocomplete="current-password" required style="--x:40px;--y:60px;--w:360px;--h:40px">
+
+        <label class="txt txt--inter fs-20" for="new-password" style="--x:28px;--y:110px">New Password</label>
+        <input class="field field--pw" id="new-password" name="new-password" type="password" autocomplete="new-password" required style="--x:40px;--y:140px;--w:360px;--h:40px">
+
+        <label class="txt txt--inter fs-20" for="confirm-new-password" style="--x:28px;--y:190px">Confirm New Password</label>
+        <input class="field field--pw" id="confirm-new-password" name="confirm-new-password" type="password" autocomplete="new-password" required style="--x:40px;--y:220px;--w:360px;--h:40px">
+
+        <button class="btn-green" type="submit" style="--x:118px;--y:285px;--w:204px;--h:51px">Save Changes</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

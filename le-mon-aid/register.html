@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register · Le Mon-Aid</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="screen">
+    <div class="screen__bg"></div>
+    <div class="logo" style="--x:158px;--y:17px;--w:125px;--h:125px"><img src="assets/logo.png" alt="Le Mon-Aid logo"></div>
+    <div class="panel" style="--y:142px;--h:627px"></div>
+    <h1 class="brand" style="--x:101px;--y:170px">Le Mon-Aid</h1>
+    <h2 class="txt fs-25 f-heavy c-ink" style="--x:131px;--y:263px">Register Here</h2>
+
+    <form action="financial-info.html">
+      <label class="sr-only" for="username">Username</label>
+      <input class="field" id="username" name="username" type="text" placeholder="Username" autocomplete="username" required style="--x:45px;--y:321px">
+
+      <label class="sr-only" for="email">Email</label>
+      <input class="field" id="email" name="email" type="email" placeholder="Email" autocomplete="email" required style="--x:45px;--y:393px">
+
+      <label class="sr-only" for="password">Password</label>
+      <input class="field" id="password" name="password" type="password" placeholder="Password" autocomplete="new-password" required style="--x:45px;--y:465px">
+
+      <label class="sr-only" for="confirm-password">Confirm Password</label>
+      <input class="field" id="confirm-password" name="confirm-password" type="password" placeholder="Confirm Password" autocomplete="new-password" required style="--x:45px;--y:537px">
+
+      <button class="btn" type="submit" style="--x:60px;--y:626px">Register</button>
+    </form>
+
+    <div class="leaf" style="--x:319px;--y:587px"><img src="assets/logo.png" alt=""></div>
+
+    <p class="txt fs-14" style="--x:99px;--y:702px"><span class="f-med c-brown">Already have an account? </span><a class="f-bold c-orange" href="login.html">Login here</a></p>
+  </main>
+</body>
+</html>

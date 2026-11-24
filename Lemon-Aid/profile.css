@@ -1,55 +1,28 @@
 .profile-screen {
-  background:
-    radial-gradient(circle at 18% 15%, rgba(220, 248, 178, 0.45), transparent 45%),
-    radial-gradient(circle at 85% 80%, rgba(255, 230, 110, 0.35), transparent 45%),
-    #fcf8eb;
+  background: var(--cream);
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-top: 24px;
-}
-
-.brand-logo {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-}
-
-.plan-badge {
-  display: block;
-  margin-top: 2px;
-  color: #386629;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-/* User Card */
 .user-card {
   display: flex;
   align-items: center;
   gap: 14px;
   margin-top: 20px;
   padding: 15px 18px;
-  border: 2.5px solid #2d5a27;
-  border-radius: 22px;
-  background: linear-gradient(135deg, #a4d580, #86b864);
-  box-shadow: 0 4px 14px rgba(45, 90, 39, 0.12);
+  border: 3px solid var(--green-dark);
+  border-radius: 20px;
+  background: var(--user-gradient);
+  box-shadow: var(--shadow-btn);
 }
 
 .avatar-circle {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: #a9e083;
+  background: var(--lime);
 }
 
 .user-details {
@@ -59,10 +32,10 @@
 
 .user-name {
   margin: 0;
-  color: #1e4215;
-  font-size: 19px;
+  color: var(--ink);
+  font-size: 20px;
   font-weight: 800;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.3px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -70,34 +43,33 @@
 
 .user-email {
   margin: 3px 0 0;
-  color: #264e1c;
-  font-size: 11px;
+  color: var(--ink-2);
+  font-size: 12px;
   font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* Upgrade Banner */
 .upgrade-banner {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   width: 100%;
+  height: 50px;
   margin-top: 14px;
-  padding: 13px 20px;
-  border: 2px solid #e69500;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #f5a623 0%, #ffd043 100%);
-  box-shadow: 0 4px 14px rgba(230, 149, 0, 0.22);
+  padding: 0 20px;
+  border: 1px solid var(--orange);
+  border-radius: 15px;
+  background: var(--btn-gradient);
+  box-shadow: var(--shadow-btn);
   text-decoration: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 150ms ease;
 }
 
 .upgrade-banner:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(230, 149, 0, 0.3);
 }
 
 .flower-icon {
@@ -107,17 +79,15 @@
 }
 
 .upgrade-text {
-  color: #523709;
-  font-size: 16px;
+  color: var(--brown);
+  font-size: 18px;
   font-weight: 800;
-  letter-spacing: -0.2px;
 }
 
-/* More Section */
 .more-title {
-  margin: 24px 6px 10px;
-  color: #2e4e1a;
-  font-size: 13px;
+  margin: 22px 4px 10px;
+  color: var(--brown);
+  font-size: 14px;
   font-weight: 800;
 }
 
@@ -134,44 +104,37 @@
   align-items: center;
   gap: 14px;
   width: 100%;
-  min-height: 48px;
-  padding: 12px 18px;
-  border: 2px solid #f5a623;
-  border-radius: 16px;
-  background: #fffbe6;
-  color: #4a3512;
-  font-size: 13.5px;
+  height: 56px;
+  padding: 0 18px;
+  border: 3px solid var(--gold);
+  border-radius: 10px;
+  background: var(--butter);
+  color: var(--brown);
+  font-size: 14px;
   font-weight: 800;
   text-decoration: none;
-  box-shadow: 0 3px 10px rgba(245, 166, 35, 0.08);
-  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  transition: transform 150ms ease, background 150ms ease;
 }
 
 .menu-btn:hover {
   transform: translateX(3px);
-  background: #fff8d6;
-  border-color: #e09418;
+  background: var(--lime);
 }
 
 .menu-btn svg {
   flex-shrink: 0;
 }
 
-/* Log Out */
 .logout {
   width: 100%;
-  min-height: 44px;
+  height: 46px;
   margin-top: 20px;
-  margin-bottom: 25px;
-  border: 1px solid rgba(119, 85, 55, 0.15);
-  border-radius: 14px;
-  background: #fff;
-  color: var(--red);
-  font-size: 13px;
+  margin-bottom: 24px;
+  border: 3px solid var(--gold);
+  border-radius: 15px;
+  background: var(--butter);
+  color: var(--required);
+  font-size: 14px;
   font-weight: 800;
-  transition: background 0.15s ease;
-}
-
-.logout:hover {
-  background: #fff2f0;
+  box-shadow: var(--shadow-btn);
 }

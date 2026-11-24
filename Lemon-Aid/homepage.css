@@ -1,50 +1,50 @@
 .hello {
-  margin: 34px 0 2px;
-  color: var(--muted);
+  margin: 22px 0 2px;
+  color: var(--brown-soft);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .username {
-  margin: 0;
-  font-size: 30px;
+  margin: 0 0 14px;
+  color: var(--brown);
+  font-size: 25px;
   font-weight: 800;
-  letter-spacing: -1.2px;
-  line-height: 1.2;
+  letter-spacing: -0.4px;
 }
 
 .balance {
-  margin-top: 18px;
-  padding: 20px 22px;
-  border-radius: 24px;
-  background: linear-gradient(130deg, var(--yellow-light), var(--lemon));
-  box-shadow: 0 12px 24px rgba(227, 106, 0, 0.11);
-  color: var(--brown);
-  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  border: 3px solid var(--green-dark);
+  border-radius: 20px;
+  background: var(--user-gradient);
+  box-shadow: var(--shadow-btn);
+  color: var(--ink);
+  font-size: 13px;
   font-weight: 700;
 }
 
 .balance strong {
-  display: block;
-  margin: 5px 0;
   color: var(--ink);
-  font-size: clamp(25px, 7vw, 32px);
+  font-size: 24px;
   font-weight: 800;
-  letter-spacing: -1px;
-  line-height: 1.15;
+  line-height: 1.2;
 }
 
 #search-form {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 13px;
-  margin-top: 27px;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  background: var(--surface);
-  box-shadow: 0 8px 24px rgba(86, 58, 25, 0.06);
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px 18px;
+  border: 3px solid var(--gold);
+  border-radius: 20px;
+  background: var(--butter);
+  box-shadow: var(--shadow-btn);
 }
 
 #search-form h4 {
@@ -52,105 +52,83 @@
   color: var(--brown);
   font-size: 16px;
   font-weight: 800;
-  text-align: center;
 }
 
-#search-form > button {
-  width: 100%;
-  min-height: 48px;
-  border-radius: 14px;
-  background: var(--yellow);
+#search-form button[type="submit"] {
+  min-width: 84px;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 15px;
+  background: var(--btn-gradient);
+  box-shadow: var(--shadow-btn);
   color: var(--brown);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 800;
-  box-shadow: 0 8px 16px rgba(227, 106, 0, 0.18);
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
+  transition: transform 150ms ease;
 }
 
-#search-form > button:hover {
-  background: var(--yellow-light);
-  transform: translateY(-1px);
-}
-
-#search-form > button:active {
-  transform: translateY(0);
-}
-
-.error {
-  min-height: 17px;
-  margin: 8px 4px 0;
-  color: var(--red);
-  font-size: 12px;
+#search-form button[type="submit"]:active {
+  transform: scale(0.97);
 }
 
 .recent-purchases-card {
   margin-top: 18px;
-  padding: 18px 16px 14px;
-  border: 3px solid #1fa3e5;
-  border-radius: 22px;
-  background: #cff09e;
-  box-shadow: 0 6px 18px rgba(31, 163, 229, 0.12);
+  padding: 16px;
+  border: 3px solid var(--gold);
+  border-radius: 20px;
+  background: var(--butter);
+  box-shadow: var(--shadow-btn);
 }
 
 .recent-purchases-header {
-  margin-bottom: 12px;
-  padding: 10px 16px;
-  border-radius: 14px;
-  background: #7dae66;
-  color: #294c16;
-  font-size: 16px;
-  font-weight: 800;
-  text-align: center;
-  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--green);
+  color: var(--green-dark);
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .recent-purchases-list {
   display: flex;
   flex-direction: column;
+  margin-top: 10px;
 }
 
-.purchase-row {
+.recent-purchases-list > * {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 11px 4px;
-  border-bottom: 1.5px solid #829a50;
-  color: #455222;
-  font-size: 12px;
-  font-weight: 700;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 6px;
+  border-bottom: 1px solid var(--cream-border);
+  color: var(--brown);
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.purchase-row .p-category {
-  flex: 1;
-  text-align: left;
-}
-
-.purchase-row .p-date {
-  flex: 2;
-  text-align: center;
-}
-
-.purchase-row .p-amount {
-  flex: 2;
-  text-align: right;
-  font-weight: 800;
+.recent-purchases-list > *:last-child {
+  border-bottom: 0;
 }
 
 .recent-purchases-footer {
-  margin-top: 14px;
-  text-align: right;
+  margin-top: 12px;
+  text-align: center;
 }
 
-.recent-purchases-footer .view-history {
-  color: #658c42;
-  font-size: 12px;
+.view-history {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 42px;
+  border-radius: 15px;
+  background: var(--lime);
+  color: var(--green-dark);
+  font-size: 14px;
   font-weight: 800;
-  text-decoration: none;
-  transition: opacity 0.2s ease;
-}
-
-.recent-purchases-footer .view-history:hover {
-  opacity: 0.8;
-  text-decoration: underline;
 }

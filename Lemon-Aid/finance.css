@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin-top: 17px;
+  margin-top: 16px;
 }
 
 .stat {
@@ -11,20 +11,19 @@
   gap: 9px;
   min-width: 0;
   padding: 12px 11px;
-  border: 1px solid rgba(119, 85, 55, 0.06);
-  border-radius: 16px;
-  background: #fff;
-  color: var(--muted);
-  font-size: 9px;
-  line-height: 1.4;
-  box-shadow: 0 6px 18px rgba(86, 58, 25, 0.05);
+  border-radius: 10px;
+  background: var(--butter);
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .stat b {
   display: block;
-  margin-top: 3px;
-  color: var(--ink);
-  font-size: 11px;
+  margin-top: 4px;
+  color: var(--brown);
+  font-size: 14px;
   font-weight: 800;
   overflow-wrap: anywhere;
 }
@@ -38,5 +37,10 @@
   grid-column: 1 / -1;
   justify-self: stretch;
   width: auto;
-  background: linear-gradient(110deg, var(--green-light), #ecf9df);
+  background: var(--lime);
+  color: var(--green-dark);
+}
+
+.stat.wide b {
+  color: var(--green-dark);
 }

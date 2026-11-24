@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saving · Le Mon-Aid</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="screen">
+    <div class="screen__bg"></div>
+    <div class="panel"></div>
+    <h1 class="brand">Le Mon-Aid</h1>
+    <p class="plan">FREE PLAN</p>
+    <div class="logo"><img src="assets/logo.png" alt="Le Mon-Aid logo"></div>
+
+    <h2 class="txt fs-25 f-heavy c-ink" style="--x:79px;--y:185px">Your Financial Tracker</h2>
+
+    <!-- Summary tiles -->
+    <div class="stat" style="--x:37px;--y:233px">
+      <p class="stat__label">Monthly Income</p>
+      <p class="stat__value">Rp. 1.234.567.890</p>
+    </div>
+    <div class="stat" style="--x:230px;--y:233px">
+      <p class="stat__label">Spending Budget</p>
+      <p class="stat__value">Rp. 1.234.567.890</p>
+    </div>
+
+    <div class="card card--gradient" style="--x:37px;--y:308px;--h:90px"></div>
+    <p class="txt fs-14 f-bold c-brown" style="--x:55px;--y:322px">Remaining&nbsp; Available Spending Budget</p>
+    <p class="txt fs-25 f-heavy c-brown" style="--x:57px;--y:347px">Rp. 1.234.567.890</p>
+
+    <div class="stat stat--saved" style="--x:37px;--y:408px;--h:80px">
+      <p class="stat__label">Money Saved</p>
+      <p class="stat__value">Rp. 1.234.567.890</p>
+      <p class="stat__note">Progress:100%</p>
+    </div>
+    <div class="stat stat--target" style="--x:221px;--y:408px;--h:80px">
+      <p class="stat__label">Target saving</p>
+      <p class="stat__value">Rp. 1.234.567.890</p>
+    </div>
+
+    <!-- Spending chart -->
+    <div class="card card--lime" style="--x:37px;--y:509px;--h:286px"></div>
+    <h2 class="bar bar--green" style="--y:519px">Your Spending This Month</h2>
+    <img class="abs" src="assets/pie-spending.svg" alt="Spending breakdown chart" style="--x:48px;--y:569px;--w:207px;--h:207px">
+    <ul class="legend" style="--x:298px;--y:588px">
+      <li><img src="assets/legend-food.svg" alt="">Food</li>
+      <li><img src="assets/legend-shopping.svg" alt="">Shopping</li>
+      <li><img src="assets/legend-other.svg" alt="">Other</li>
+    </ul>
+
+    <a class="btn-green" href="#add-spending" style="--x:238px;--y:740px">Add Spending</a>
+    <div class="leaf" style="--x:326px;--y:701px"><img src="assets/logo.png" alt=""></div>
+
+    <nav class="tabbar" aria-label="Main">
+      <a class="tab tab--home" href="home.html"><img src="assets/nav-home.svg" alt=""><span class="tab__label">Home</span></a>
+      <a class="tab tab--saving" href="saving.html" aria-current="page"><img src="assets/nav-saving-active.svg" alt=""><span class="tab__label">Saving</span></a>
+      <a class="tab tab--timer" href="timer.html"><img src="assets/nav-timer.svg" alt=""><span class="tab__label">Timer</span></a>
+      <a class="tab tab--profile" href="profile.html"><img src="assets/nav-profile.svg" alt=""><span class="tab__label">Profile</span></a>
+    </nav>
+
+    <!-- Popup: Add spending -->
+    <div class="modal" id="add-spending" role="dialog" aria-label="Add spending">
+      <a class="modal__scrim" href="#" aria-label="Close"></a>
+      <form class="popup popup--add" action="#" style="--pw:365px;--ph:300px">
+        <div class="popup__box"></div>
+        <label class="txt fs-20 f-bold c-dark" for="category" style="--x:36px;--y:34px">Category</label>
+        <select class="select" id="category" name="category" required style="--x:169px;--y:27px;--w:149px;--h:40px">
+          <option value="" disabled selected>Select</option>
+          <option>Food</option>
+          <option>Shopping</option>
+          <option>Other</option>
+        </select>
+        <img class="abs abs--ghost rot-180" src="assets/select-arrow.svg" alt="" style="--x:287px;--y:43px;--w:17.64px;--h:11.75px">
+
+        <label class="txt fs-20 f-bold c-dark" for="price" style="--x:36px;--y:86px">Price</label>
+        <input class="field field--green" id="price" name="price" type="text" inputmode="numeric" required style="--x:36px;--y:114px;--w:282px;--h:40px">
+
+        <label class="txt fs-20 f-bold c-dark" for="date" style="--x:36px;--y:159px">Date</label>
+        <input class="field field--green" id="date" name="date" type="date" required style="--x:36px;--y:186px;--w:282px;--h:40px">
+
+        <button class="btn-green" type="submit" style="--x:108px;--y:242px">Add</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>
